@@ -4,5 +4,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="librerias/Driver_MySQL_Connector_J/mysql-connector-java-5.1.47-bin.jar"/>
 	<classpathentry kind="lib" path="librerias/JDBC_Oracle_Connection_Pool/ucp.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/TutorialJava_01_Basico"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -3,6 +3,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -165,8 +167,7 @@ public class VentanaPrincipal extends JFrame {
 	 */
 	private void setDimensionesBasicas () {
 		this.setExtendedState(JFrame.NORMAL);
-		this.setBounds(0, 0, 800, 600);
-		this.setMinimumSize(new Dimension(500,300));
+		this.setBounds(0, 0, 200, 200);
 
 	}
 	
@@ -283,6 +284,9 @@ public class VentanaPrincipal extends JFrame {
 		}
 	}
 	
+	/**
+	 * Metodo para eliminar un registro
+	 */
 	private void eliminarRegistro() {
 		
 		try {
