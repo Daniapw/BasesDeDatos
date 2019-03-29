@@ -14,19 +14,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import gestionCoches.modelo.ControladorBBDDCoche;
+import gestionCoches.modelo.ControladorBBDDConcesionarios;
 import gestionCoches.modelo.ControladorBBDDFabricante;
-import gestionCoches.modelo.entidades.Coche;
+import gestionCoches.modelo.entidades.Concesionario;
 import gestionCoches.modelo.entidades.Fabricante;
 import tutorialJava.capitulo8_AWT_SWING.utils.CacheImagenes;
 
-@SuppressWarnings("serial")
-public class PanelGestionFabricantes extends JPanel {
+public class PanelGestionConcesionario extends JPanel {
 	
 	GridBagConstraints gbc = new GridBagConstraints();
 	JTextField jtID = new JTextField();
 	JTextField jtCIF = new JTextField();
 	JTextField jtNombre = new JTextField();
+	JTextField jtLocalidad = new JTextField();
 	JButton jbtPrimero = new JButton();
 	JButton jbtAnterior= new JButton();
 	JButton jbtSiguiente = new JButton();
@@ -35,13 +35,12 @@ public class PanelGestionFabricantes extends JPanel {
 	JButton jbtGuardar = new JButton();
 	JButton jbtBorrar = new JButton();
 	
-	
-	Fabricante fabActual = new Fabricante();
+	Concesionario concActual = new Concesionario();
 			
 	/**
 	 * 
 	 */
-	public PanelGestionFabricantes() {
+	public PanelGestionConcesionario() {
 		
 		super();
 		
@@ -63,12 +62,12 @@ public class PanelGestionFabricantes extends JPanel {
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				if (e.getUnitsToScroll() < 0) {
-					if (ControladorBBDDFabricante.getSiguienteFabricante(fabActual) != null) {
+					if (ControladorBBDDConcesionarios.getSiguienteConcesionario(concActual) != null) {
 						navegaASiguiente();
 					}
 				}
 				else {
-					if (ControladorBBDDFabricante.getAnteriorFabricante(fabActual) != null) {
+					if (ControladorBBDDConcesionarios.getAnteriorConcesionario(concActual) != null) {
 						navegaAAnterior();
 					}
 				}
@@ -106,6 +105,13 @@ public class PanelGestionFabricantes extends JPanel {
 		
 		colocaComponente(1, 2, GridBagConstraints.EAST, pesoCol2, 0, GridBagConstraints.HORIZONTAL);
 		this.add(jtNombre, gbc);
+		
+		//Localidad
+		colocaComponente(0, 3, GridBagConstraints.EAST, pesoCol1, 0, GridBagConstraints.NONE);
+		this.add(new JLabel("Localidad:"), gbc);
+		
+		colocaComponente(1, 3, GridBagConstraints.EAST, pesoCol2, 0, GridBagConstraints.HORIZONTAL);
+		this.add(jtLocalidad, gbc);
 		
 		// Incorporamos fila botones
 		colocaComponente(0, 5, GridBagConstraints.NORTH, 1, 1, GridBagConstraints.BOTH);
@@ -228,9 +234,9 @@ public class PanelGestionFabricantes extends JPanel {
 	 */
 	private void navegaAPrimero() {
 		
-		fabActual = ControladorBBDDFabricante.getPrimerFabricante();
+		concActual = ControladorBBDDConcesionarios.getPrimerConcesionario();
 		
-		cargaFabricanteEnComponentesVisuales();
+		cargaConcesionarioEnComponentesVisuales();
 		actualizaEstadoBotonera();
 	}
 	
@@ -239,9 +245,9 @@ public class PanelGestionFabricantes extends JPanel {
 	 */
 	private void navegaAUltimo() {
 		
-		fabActual = ControladorBBDDFabricante.getUltimoFabricante();
+		concActual = ControladorBBDDConcesionarios.getUltimoConcesionario();
 		
-		cargaFabricanteEnComponentesVisuales();
+		cargaConcesionarioEnComponentesVisuales();
 		actualizaEstadoBotonera();
 	}
 	
@@ -250,9 +256,9 @@ public class PanelGestionFabricantes extends JPanel {
 	 */
 	private void navegaASiguiente() {
 		
-		fabActual = ControladorBBDDFabricante.getSiguienteFabricante(fabActual);
+		concActual = ControladorBBDDConcesionarios.getSiguienteConcesionario(concActual);
 		
-		cargaFabricanteEnComponentesVisuales();
+		cargaConcesionarioEnComponentesVisuales();
 		actualizaEstadoBotonera();
 	}
 	
@@ -261,9 +267,9 @@ public class PanelGestionFabricantes extends JPanel {
 	 */
 	private void navegaAAnterior() {
 		
-		fabActual = ControladorBBDDFabricante.getAnteriorFabricante(fabActual);
+		concActual = ControladorBBDDConcesionarios.getAnteriorConcesionario(concActual);
 		
-		cargaFabricanteEnComponentesVisuales();
+		cargaConcesionarioEnComponentesVisuales();
 		
 		actualizaEstadoBotonera();
 	}
@@ -272,11 +278,12 @@ public class PanelGestionFabricantes extends JPanel {
 	 * 
 	 */
 	private void anadirNuevo() {
-		this.fabActual = new Fabricante();
-		this.fabActual.setId(-1);
+		this.concActual = new Concesionario();
+		this.concActual.setId(-1);
 		this.jtID.setText("" + -1);
 		this.jtCIF.setText("");
 		this.jtNombre.setText("");
+		this.jtLocalidad.setText("");
 
 		// Actualizo la botonera
 		this.actualizaEstadoBotonera();
@@ -287,13 +294,13 @@ public class PanelGestionFabricantes extends JPanel {
 	 */
 	private void guardar() {
 		// Es un alta nueva o una modificaci�n
-		cargaFabricanteDesdeComponentesVisuales();
-		if (this.fabActual.getId() == -1) { // Alta
-			ControladorBBDDFabricante.guardarNuevoFabricante(fabActual);
+		cargaConcesionarioDesdeComponentesVisuales();
+		if (this.concActual.getId() == -1) { // Alta
+			ControladorBBDDConcesionarios.guardarNuevoConcesionario(concActual);
 			this.navegaAUltimo();
 		}
 		else { // Modificaci�n
-			ControladorBBDDFabricante.modificarFabricante(fabActual);
+			ControladorBBDDConcesionarios.modificarConcesionario(concActual);
 		}
 
 		// Actualizo la botonera
@@ -306,10 +313,10 @@ public class PanelGestionFabricantes extends JPanel {
 	private void eliminar() {
 		// Por regla general, siempre que eliminemos un coche navegaremos al siguiente
 		// registro
-		Fabricante fabAEliminar = this.fabActual;
+		Concesionario concAEliminar = this.concActual;
 		
 		// Compruebo si el coche actual es el �ltimo coche
-		if (ControladorBBDDFabricante.getUltimoFabricante().getId() == this.fabActual.getId()) {
+		if (ControladorBBDDConcesionarios.getUltimoConcesionario().getId() == this.concActual.getId()) {
 			navegaAAnterior();
 		}
 		else {
@@ -317,16 +324,17 @@ public class PanelGestionFabricantes extends JPanel {
 		}
 		
 		// Finalmente elimino el coche
-		ControladorBBDDFabricante.eliminarFabricante(fabAEliminar);
+		ControladorBBDDConcesionarios.eliminarConcesionario(concAEliminar);
 		
 		// Actualizo la botonera
 		this.actualizaEstadoBotonera();
 	}
+	
 	/**
 	 * 
 	 */
 	private void actualizaEstadoBotonera() {
-		if (ControladorBBDDFabricante.getAnteriorFabricante(this.fabActual) == null) {
+		if (ControladorBBDDConcesionarios.getAnteriorConcesionario(concActual) == null) {
 			jbtPrimero.setEnabled(false);
 			jbtAnterior.setEnabled(false);
 		}
@@ -334,7 +342,7 @@ public class PanelGestionFabricantes extends JPanel {
 			jbtPrimero.setEnabled(true);
 			jbtAnterior.setEnabled(true);
 		}
-		if (ControladorBBDDFabricante.getSiguienteFabricante(this.fabActual) == null) {
+		if (ControladorBBDDConcesionarios.getSiguienteConcesionario(concActual) == null) {
 			jbtSiguiente.setEnabled(false);
 			jbtUltimo.setEnabled(false);
 		}
@@ -347,20 +355,22 @@ public class PanelGestionFabricantes extends JPanel {
 	/**
 	 * 
 	 */
-	private void cargaFabricanteEnComponentesVisuales () {
-		this.jtID.setText("" + fabActual.getId());
-		this.jtCIF.setText(fabActual.getCif());
-		this.jtNombre.setText(fabActual.getNombre());
+	private void cargaConcesionarioEnComponentesVisuales () {
+		this.jtID.setText("" + concActual.getId());
+		this.jtCIF.setText(concActual.getCif());
+		this.jtNombre.setText(concActual.getNombre());
+		this.jtLocalidad.setText(concActual.getLocalidad());
 	
 	}
 	
 	/**
 	 * 
 	 */
-	private void cargaFabricanteDesdeComponentesVisuales () {
-		this.fabActual.setId(Integer.parseInt(this.jtID.getText()));
-		this.fabActual.setCif(this.jtCIF.getText());
-		this.fabActual.setNombre(this.jtNombre.getText());
+	private void cargaConcesionarioDesdeComponentesVisuales () {
+		this.concActual.setId(Integer.parseInt(this.jtID.getText()));
+		this.concActual.setCif(this.jtCIF.getText());
+		this.concActual.setNombre(this.jtNombre.getText());
+		this.concActual.setLocalidad(this.jtLocalidad.getText());
 	}
 
 	/**
@@ -380,6 +390,4 @@ public class PanelGestionFabricantes extends JPanel {
 		gbc.fill = fill;
 		
 	}
-	
-	
 }
