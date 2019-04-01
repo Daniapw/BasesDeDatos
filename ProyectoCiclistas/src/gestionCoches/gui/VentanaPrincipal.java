@@ -17,6 +17,7 @@ public class VentanaPrincipal extends JFrame {
 		jtabbedPane.add("Gesti�n de coches", new PanelGestionCoche());
 		jtabbedPane.add("Gestión de fabricantes", new PanelGestionFabricantes());
 		jtabbedPane.add("Gestión de concesionarios", new PanelGestionConcesionario());
+		jtabbedPane.addTab("Gestion de clientes", new PanelGestionClientes());
 		
 		this.setContentPane(jtabbedPane);
 	}

@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -37,7 +38,7 @@ public class PanelGestionCoche extends JPanel {
 	JButton jbtNavSiguiente = new JButton();
 	JButton jbtGuardar = new JButton();
 	JButton jbtNuevo = new JButton();
-	JButton jbtEliminar = new JButton();
+	JButton jbtEliminar = new JButton();	
 	
 	Coche coche = new Coche(); // Coche mostrado en pantalla
 	

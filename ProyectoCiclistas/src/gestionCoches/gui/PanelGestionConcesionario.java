@@ -35,7 +35,7 @@ public class PanelGestionConcesionario extends JPanel {
 	JButton jbtGuardar = new JButton();
 	JButton jbtBorrar = new JButton();
 	
-	Concesionario concActual = new Concesionario();
+	Concesionario concActual = null;
 			
 	/**
 	 * 
@@ -47,7 +47,7 @@ public class PanelGestionConcesionario extends JPanel {
 		//Colocar componentes
 		maquetarVentana();
 		
-		//Cargar primer fabricante al inicio
+		//Cargar primer concesionario al inicio
 		navegaAPrimero();
 		
 		//Anadir control rueda raton

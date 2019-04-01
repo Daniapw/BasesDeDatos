@@ -65,7 +65,7 @@ public class ControladorBBDDConcesionarios {
 	 */
 	public static Concesionario getPrimerConcesionario() {
 		
-		Concesionario concesionario = new Concesionario();
+		Concesionario concesionario = null;
 		
 		try {
 			Connection conn = ConnectionManagerV2.getConexion();
@@ -93,7 +93,7 @@ public class ControladorBBDDConcesionarios {
 	 */
 	public static Concesionario getSiguienteConcesionario(Concesionario concActual) {
 		
-		Concesionario concesionario = new Concesionario();
+		Concesionario concesionario = null;
 		try {
 			Connection conn = ConnectionManagerV2.getConexion();
 			
@@ -119,7 +119,7 @@ public class ControladorBBDDConcesionarios {
 	 * @return
 	 */
 	public static Concesionario getAnteriorConcesionario(Concesionario concActual) {
-		Concesionario concesionario = new Concesionario();
+		Concesionario concesionario = null;
 		
 		try {
 			Connection conn = ConnectionManagerV2.getConexion();
@@ -147,7 +147,7 @@ public class ControladorBBDDConcesionarios {
 	 */
 	public static Concesionario getUltimoConcesionario() {
 		
-		Concesionario concesionario = new Concesionario();
+		Concesionario concesionario = null;
 		
 		try {
 			Connection conn = ConnectionManagerV2.getConexion();
