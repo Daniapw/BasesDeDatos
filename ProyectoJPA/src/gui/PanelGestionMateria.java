@@ -6,8 +6,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -16,14 +18,17 @@ import javax.swing.JToolBar;
 
 import gui.utils.CacheImagenes;
 import modelo.Curso;
+import modelo.Materia;
 import modelo.controladores.CursoControlador;
+import modelo.controladores.MateriaControlador;
 
-public class PanelGestionCursosAcademicos extends JPanel {
-
+public class PanelGestionMateria extends JPanel {
 	JTextField jtfID = new JTextField(10);
-	JTextField jtfDesc = new JTextField(10);
+	JTextField jtfNombre = new JTextField(10);
+	JTextField jtfAcronimo = new JTextField(10);
+	JComboBox<Curso> jcbIDCurso = new JComboBox<Curso>();
 	GridBagConstraints gbc = new GridBagConstraints();
-	Curso cursoActual = null;
+	Materia actual = null;
 	
 	public static int LOAD_FIRST = 0;
 	public static int LOAD_PREV = 1;
@@ -33,14 +38,14 @@ public class PanelGestionCursosAcademicos extends JPanel {
 	public static int SAVE = 5;
 	public static int REMOVE = 6;
 	
-	public PanelGestionCursosAcademicos() {
+	public PanelGestionMateria() {
 		super();
 		this.setLayout(new BorderLayout());
 		
 		this.add(toolbar(), BorderLayout.NORTH);
 		this.add(getPanelCentral(), BorderLayout.CENTER);
 		
-		cursoActual = CursoControlador.getInstancia().findFirst();
+		actual = MateriaControlador.getInstancia().findFirst();
 		cargarDatosActual();
 	}
 	
@@ -93,15 +98,15 @@ public class PanelGestionCursosAcademicos extends JPanel {
 		jbt.addActionListener(new ActionListener () {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				Curso obtenido = null;
+				Materia obtenido = null;
 				if (funcion == LOAD_FIRST) 
-					obtenido = CursoControlador.getInstancia().findFirst();
+					obtenido = MateriaControlador.getInstancia().findFirst();
 				if (funcion == LOAD_PREV) 
-					obtenido = CursoControlador.getInstancia().findPrevious(cursoActual);
+					obtenido = MateriaControlador.getInstancia().findPrevious(actual);
 				if (funcion == LOAD_NEXT) 
-					obtenido = CursoControlador.getInstancia().findNext(cursoActual);
+					obtenido = MateriaControlador.getInstancia().findNext(actual);
 				if (funcion == LOAD_LAST) 
-					obtenido = CursoControlador.getInstancia().findLast();
+					obtenido = MateriaControlador.getInstancia().findLast();
 				if (funcion == NEW) 
 					nuevo();
 				if (funcion == SAVE) 
@@ -110,7 +115,7 @@ public class PanelGestionCursosAcademicos extends JPanel {
 					obtenido = eliminar();
 				
 				if (obtenido != null) {
-					cursoActual = obtenido;
+					actual= obtenido;
 					cargarDatosActual();
 				}
 			}});
@@ -138,15 +143,39 @@ public class PanelGestionCursosAcademicos extends JPanel {
 		
 		jtfID.setEnabled(false);
 		
-		//Desc
+		//Nombre
 		colocaComponente(0, 1, GridBagConstraints.EAST, pesoCol1, 0, GridBagConstraints.NONE);
-		panel.add(new JLabel("Descripción:"), gbc);
+		panel.add(new JLabel("Nombre:"), gbc);
 		
 		colocaComponente(1, 1, GridBagConstraints.WEST, pesoCol2, 0, GridBagConstraints.NONE);
-		panel.add(jtfDesc, gbc);
+		panel.add(jtfNombre, gbc);
 		
+		//Acronimo
+		colocaComponente(0, 2, GridBagConstraints.EAST, pesoCol1, 0, GridBagConstraints.NONE);
+		panel.add(new JLabel("Acrónimo:"), gbc);
+		
+		colocaComponente(1, 2, GridBagConstraints.WEST, pesoCol2, 0, GridBagConstraints.NONE);
+		panel.add(jtfAcronimo, gbc);
+		
+		//ComboBox Curso
+		colocaComponente(0, 3, GridBagConstraints.EAST, pesoCol1, 0, GridBagConstraints.NONE);
+		panel.add(new JLabel("Curso:"), gbc);
+		
+		colocaComponente(1, 3, GridBagConstraints.WEST, pesoCol2, 0, GridBagConstraints.NONE);
+		panel.add(jcbIDCurso, gbc);
+		
+		cargarCB();
 		
 		return panel;
+	}
+	
+	private void cargarCB() {
+		
+		List<Curso> cursos = MateriaControlador.getInstancia().findAllCursos();
+		for (Curso curso : cursos) {
+			jcbIDCurso.addItem(curso);
+		}
+		
 	}
 	
 	/**
@@ -155,25 +184,26 @@ public class PanelGestionCursosAcademicos extends JPanel {
 	private void nuevo() {
 		
 		jtfID.setText("");
-		jtfDesc.setText("");
+		jtfNombre.setText("");
+		jtfAcronimo.setText("");
+		jcbIDCurso.setSelectedItem(0);
 		JOptionPane.showMessageDialog(null, "Por favor, introduzca los datos del nuevo registro");
 	}
-	
-	/**
-	 * 
-	 */
+
 	/**
 	 * 
 	 */
 	private void guardar () {
-		Curso nuevoRegistro = new Curso();
+		Materia nuevoRegistro = new Materia();
 		
 		if (this.jtfID.getText().trim().equals("")) 
 			nuevoRegistro.setId(0);
 		else 
 			nuevoRegistro.setId(Integer.parseInt(this.jtfID.getText()));
 		
-		nuevoRegistro.setDescripcion(jtfDesc.getText());
+		nuevoRegistro.setNombre(jtfNombre.getText());
+		nuevoRegistro.setAcronimo(jtfAcronimo.getText());
+		nuevoRegistro.setCurso((Curso) jcbIDCurso.getSelectedItem());
 		
 		if (nuevoRegistro.getId() == 0) {
 			CursoControlador.getInstancia().persist(nuevoRegistro);
@@ -185,14 +215,14 @@ public class PanelGestionCursosAcademicos extends JPanel {
 		this.jtfID.setText("" + nuevoRegistro.getId());
 		JOptionPane.showMessageDialog(this, "Guardado correctamente");
 		
-		this.cursoActual = nuevoRegistro;
+		this.actual = nuevoRegistro;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	private Curso eliminar () {
+	private Materia eliminar () {
 		String respuestas[] = new String[] {"S�", "No"};
 		int opcionElegida = JOptionPane.showOptionDialog(null, 
 				"�Realmente desea eliminar el registro?", "Eliminaci�n del registro", 
@@ -202,30 +232,32 @@ public class PanelGestionCursosAcademicos extends JPanel {
 		        respuestas, respuestas[1]);
 
 	    if(opcionElegida == 0) {
-	    	Curso nuevoAMostrar = CursoControlador.getInstancia().findPrevious(cursoActual);
+	    	Materia nuevoAMostrar = MateriaControlador.getInstancia().findPrevious(actual);
 	    	if (nuevoAMostrar == null) {
-	    		nuevoAMostrar = CursoControlador.getInstancia().findNext(cursoActual);
+	    		nuevoAMostrar = MateriaControlador.getInstancia().findNext(actual);
 	    	}
-	    	CursoControlador.getInstancia().remove(cursoActual);
+	    	CursoControlador.getInstancia().remove(actual);
 			JOptionPane.showMessageDialog(this, "Eliminaci�n correcta");
 
 	    	if (nuevoAMostrar != null) {
-	    		cursoActual = nuevoAMostrar;
+	    		actual = nuevoAMostrar;
 	    	}
 	    	else {
 	    		nuevo();
 	    	} 
 	    }
-	    return cursoActual;
+	    return actual;
 	}
 	
 	/**
 	 * 
 	 */
 	private void cargarDatosActual () {
-		if (this.cursoActual != null) {
-			this.jtfID.setText("" + this.cursoActual.getId());
-			this.jtfDesc.setText(this.cursoActual.getDescripcion());
+		if (this.actual != null) {
+			this.jtfID.setText("" + this.actual.getId());
+			this.jtfNombre.setText(this.actual.getNombre());
+			this.jtfAcronimo.setText(this.actual.getAcronimo());
+			this.jcbIDCurso.setSelectedItem(this.actual.getCurso());
 		}
 	}
 	
@@ -246,5 +278,4 @@ public class PanelGestionCursosAcademicos extends JPanel {
 		gbc.fill = fill;
 		
 	}
-
 }
