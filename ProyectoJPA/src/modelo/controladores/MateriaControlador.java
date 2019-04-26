@@ -55,21 +55,6 @@ public class MateriaControlador extends Controlador{
 		return (Materia) super.findPrevious(e);
 	}
 
-	
-	public List<Curso> findAllCursos() {
-		
-		List<Curso> cursos = new ArrayList<Curso>();
-		List<Entidad> entidades = super.findAll();
-		
-		for (Entidad entidad : entidades) {
-			
-			
-			cursos.add((Curso) entidad);
-		}
-		
-		
-		return cursos;
-	}
 
 
 	

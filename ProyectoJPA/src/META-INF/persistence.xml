@@ -6,6 +6,7 @@
 		<class>modelo.Materia</class>
 		<class>modelo.Profesor</class>
 		<class>modelo.Valoracionmateria</class>
+		<class>modelo.TipologiaSexo</class>
 		
 		<properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>

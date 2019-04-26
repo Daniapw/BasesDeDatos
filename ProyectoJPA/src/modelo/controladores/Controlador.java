@@ -123,6 +123,7 @@ public class Controlador {
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Entidad> findAll () {
 		
 		EntityManager em = getEntityManagerFactory().createEntityManager();
@@ -130,7 +131,7 @@ public class Controlador {
 		Query q;
 		List<Entidad> entidades = new ArrayList<Entidad>();
 		try {
-			q = em.createNativeQuery("SELECT * FROM " + this.nombreEntidad.toLowerCase() +";", Class.forName("modelo." + this.nombreEntidad));
+			q = em.createQuery("SELECT o FROM " + this.nombreEntidad +" o ", Class.forName("modelo." + this.nombreEntidad));
 			entidades= (List<Entidad>) q.getResultList();
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block

@@ -1,20 +1,11 @@
 package gui;
 
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-
-import javax.swing.ButtonGroup;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.KeyStroke;
-
-import gui.utils.CacheImagenes;
 
 
 public class Menu extends JMenuBar {
@@ -60,8 +51,45 @@ public class Menu extends JMenuBar {
 			}
 		});
         
+        JMenuItem miEstudiantes = new JMenuItem("Estudiantes");
+        miEstudiantes.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				JDialog dialogo = new JDialog();
+				dialogo.setResizable(false);
+				dialogo.setTitle("Gestion de estudiantes");
+				dialogo.setBounds(100, 100, 650, 500);
+				dialogo.setContentPane(new PanelGestionEstudiantes());
+				dialogo.setModal(true);
+				dialogo.setVisible(true);
+				
+			}
+		});
+        
+        JMenuItem miProfesores = new JMenuItem("Profesores");
+        miProfesores.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				JDialog dialogo = new JDialog();
+				dialogo.setResizable(false);
+				dialogo.setTitle("Gestion de profesores");
+				dialogo.setBounds(100, 100, 650, 500);
+				dialogo.setContentPane(new PanelGestionProfesores());
+				dialogo.setModal(true);
+				dialogo.setVisible(true);
+				
+			}
+		});
+        
         menuArchivo.add(miCursoAcademico);
         menuArchivo.add(miMaterias);
+        menuArchivo.add(miEstudiantes);
+        menuArchivo.add(miProfesores);
+
         
         this.add(menuArchivo);
 	}

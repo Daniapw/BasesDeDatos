@@ -20,15 +20,15 @@ public class Valoracionmateria extends Entidad implements Serializable {
 
 	private float valoracion;
 
-	//bi-directional many-to-one association to Materia
-	@ManyToOne
-	@JoinColumn(name="idMateria")
-	private Materia materia;
-
 	//bi-directional many-to-one association to Estudiante
 	@ManyToOne
 	@JoinColumn(name="idEstudiante")
 	private Estudiante estudiante;
+
+	//bi-directional many-to-one association to Materia
+	@ManyToOne
+	@JoinColumn(name="idMateria")
+	private Materia materia;
 
 	//bi-directional many-to-one association to Profesor
 	@ManyToOne
@@ -54,14 +54,6 @@ public class Valoracionmateria extends Entidad implements Serializable {
 		this.valoracion = valoracion;
 	}
 
-	public Materia getMateria() {
-		return this.materia;
-	}
-
-	public void setMateria(Materia materia) {
-		this.materia = materia;
-	}
-
 	public Estudiante getEstudiante() {
 		return this.estudiante;
 	}
@@ -70,12 +62,26 @@ public class Valoracionmateria extends Entidad implements Serializable {
 		this.estudiante = estudiante;
 	}
 
+	public Materia getMateria() {
+		return this.materia;
+	}
+
+	public void setMateria(Materia materia) {
+		this.materia = materia;
+	}
+
 	public Profesor getProfesor() {
 		return this.profesor;
 	}
 
 	public void setProfesor(Profesor profesor) {
 		this.profesor = profesor;
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

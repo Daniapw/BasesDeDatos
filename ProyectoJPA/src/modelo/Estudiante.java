@@ -31,9 +31,17 @@ public class Estudiante extends Entidad implements Serializable {
 
 	private String email;
 
+	@Lob
+	private byte[] imagen;
+
 	private String nombre;
 
 	private String telefono;
+
+	//bi-directional many-to-one association to TipologiaSexo
+	@ManyToOne
+	@JoinColumn(name="idTipologiaSexo")
+	private TipologiaSexo tipologiaSexo;
 
 	//bi-directional many-to-one association to Valoracionmateria
 	@OneToMany(mappedBy="estudiante")
@@ -90,6 +98,14 @@ public class Estudiante extends Entidad implements Serializable {
 		this.email = email;
 	}
 
+	public byte[] getImagen() {
+		return this.imagen;
+	}
+
+	public void setImagen(byte[] imagen) {
+		this.imagen = imagen;
+	}
+
 	public String getNombre() {
 		return this.nombre;
 	}
@@ -104,6 +120,14 @@ public class Estudiante extends Entidad implements Serializable {
 
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
+	}
+
+	public TipologiaSexo getTipologiaSexo() {
+		return this.tipologiaSexo;
+	}
+
+	public void setTipologiaSexo(TipologiaSexo tipologiaSexo) {
+		this.tipologiaSexo = tipologiaSexo;
 	}
 
 	public List<Valoracionmateria> getValoracionMaterias() {
@@ -126,6 +150,12 @@ public class Estudiante extends Entidad implements Serializable {
 		valoracionMateria.setEstudiante(null);
 
 		return valoracionMateria;
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

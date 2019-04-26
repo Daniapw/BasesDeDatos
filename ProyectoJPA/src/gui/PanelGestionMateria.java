@@ -169,9 +169,12 @@ public class PanelGestionMateria extends JPanel {
 		return panel;
 	}
 	
+	/**
+	 * 
+	 */
 	private void cargarCB() {
 		
-		List<Curso> cursos = MateriaControlador.getInstancia().findAllCursos();
+		List<Curso> cursos = CursoControlador.getInstancia().findAllCursos();
 		for (Curso curso : cursos) {
 			jcbIDCurso.addItem(curso);
 		}
@@ -257,7 +260,14 @@ public class PanelGestionMateria extends JPanel {
 			this.jtfID.setText("" + this.actual.getId());
 			this.jtfNombre.setText(this.actual.getNombre());
 			this.jtfAcronimo.setText(this.actual.getAcronimo());
-			this.jcbIDCurso.setSelectedItem(this.actual.getCurso());
+			
+			//Cargar JComboBox con el curso correspondiente
+			for (int i = 0; i < this.jcbIDCurso.getItemCount(); i++) {
+				if (actual.getCurso().getId() == this.jcbIDCurso.getItemAt(i).getId()) {
+					this.jcbIDCurso.setSelectedIndex(i);
+					break;
+				}
+			}
 		}
 	}
 	

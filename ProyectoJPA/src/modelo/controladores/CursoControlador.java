@@ -1,5 +1,8 @@
 package modelo.controladores;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -53,6 +56,20 @@ public class CursoControlador extends Controlador {
 	public Curso findPrevious(Entidad e) {
 		// TODO Auto-generated method stub
 		return (Curso) super.findPrevious(e);
+	}
+	
+	public List<Curso> findAllCursos() {
+		
+		List<Curso> cursos = new ArrayList<Curso>();
+		List<Entidad> entidades = super.findAll();
+		
+		for (Entidad entidad : entidades) {
+			
+			cursos.add((Curso) entidad);
+		}
+		
+		
+		return cursos;
 	}
 	
 }
