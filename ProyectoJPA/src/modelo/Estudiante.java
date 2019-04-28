@@ -2,7 +2,6 @@ package modelo;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.util.List;
 
 
 /**
@@ -10,7 +9,6 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name="estudiante")
 @NamedQuery(name="Estudiante.findAll", query="SELECT e FROM Estudiante e")
 public class Estudiante extends Entidad implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -25,6 +23,8 @@ public class Estudiante extends Entidad implements Serializable {
 	@Column(name="apellido2")
 	private String segundoApellido;
 
+	private String colorPreferido;
+
 	private String direccion;
 
 	private String dni;
@@ -38,14 +38,10 @@ public class Estudiante extends Entidad implements Serializable {
 
 	private String telefono;
 
-	//bi-directional many-to-one association to TipologiaSexo
+	//bi-directional many-to-one association to Tipologiasexo
 	@ManyToOne
 	@JoinColumn(name="idTipologiaSexo")
 	private TipologiaSexo tipologiaSexo;
-
-	//bi-directional many-to-one association to Valoracionmateria
-	@OneToMany(mappedBy="estudiante")
-	private List<Valoracionmateria> valoracionMaterias;
 
 	public Estudiante() {
 	}
@@ -72,6 +68,14 @@ public class Estudiante extends Entidad implements Serializable {
 
 	public void setSegundoApellido(String segundoApellido) {
 		this.segundoApellido = segundoApellido;
+	}
+
+	public String getColorPreferido() {
+		return this.colorPreferido;
+	}
+
+	public void setColorPreferido(String colorPreferido) {
+		this.colorPreferido = colorPreferido;
 	}
 
 	public String getDireccion() {
@@ -126,30 +130,8 @@ public class Estudiante extends Entidad implements Serializable {
 		return this.tipologiaSexo;
 	}
 
-	public void setTipologiaSexo(TipologiaSexo tipologiaSexo) {
-		this.tipologiaSexo = tipologiaSexo;
-	}
-
-	public List<Valoracionmateria> getValoracionMaterias() {
-		return this.valoracionMaterias;
-	}
-
-	public void setValoracionMaterias(List<Valoracionmateria> valoracionMaterias) {
-		this.valoracionMaterias = valoracionMaterias;
-	}
-
-	public Valoracionmateria addValoracionMateria(Valoracionmateria valoracionMateria) {
-		getValoracionMaterias().add(valoracionMateria);
-		valoracionMateria.setEstudiante(this);
-
-		return valoracionMateria;
-	}
-
-	public Valoracionmateria removeValoracionMateria(Valoracionmateria valoracionMateria) {
-		getValoracionMaterias().remove(valoracionMateria);
-		valoracionMateria.setEstudiante(null);
-
-		return valoracionMateria;
+	public void setTipologiaSexo(TipologiaSexo tipologiasexo) {
+		this.tipologiaSexo = tipologiasexo;
 	}
 
 	@Override

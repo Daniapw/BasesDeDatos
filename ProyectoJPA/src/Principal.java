@@ -1,6 +1,4 @@
 import gui.VentanaPrincipal;
-import modelo.Curso;
-import modelo.controladores.CursoControlador;
 
 public class Principal {
 

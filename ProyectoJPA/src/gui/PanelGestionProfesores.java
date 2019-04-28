@@ -123,6 +123,8 @@ public class PanelGestionProfesores extends JPanel{
 		this.panel.getJtfDireccion().setText("");
 		this.panel.getJtfEmail().setText("");
 		this.panel.getJtfTelefono().setText("");
+		this.panel.cambiarImagen(null);
+		this.panel.cambiarColor("");
 
 		JOptionPane.showMessageDialog(null, "Por favor, introduzca los datos del nuevo registro");
 	}
@@ -148,8 +150,13 @@ public class PanelGestionProfesores extends JPanel{
 		nuevoRegistro.setDireccion(this.panel.getJtfDireccion().getText());
 		nuevoRegistro.setEmail(this.panel.getJtfEmail().getText());
 		nuevoRegistro.setTelefono(this.panel.getJtfTelefono().getText());
-		nuevoRegistro.setTipologiaSexo((TipologiaSexo) panel.jcbSexo.getSelectedItem());	
-		nuevoRegistro.setImagen(panel.getImagen());
+		nuevoRegistro.setTipologiaSexo((TipologiaSexo) panel.jcbSexo.getSelectedItem());
+		
+		if (panel.getImagen() != null)
+			nuevoRegistro.setImagen(panel.getImagen());
+		
+		if (!(actual.getColorPreferido() != null))
+			nuevoRegistro.setColorPreferido(panel.getJtfColorPreferido());
 		
 		if (nuevoRegistro.getId() == 0) {
 			EstudianteControlador.getInstancia().persist(nuevoRegistro);
@@ -225,12 +232,16 @@ public class PanelGestionProfesores extends JPanel{
 		}
 		
 		//Cargar imagen de Longblob
-		if (actual.getImagen() != null) {
-			
+		if (actual.getImagen() != null)
 			panel.cambiarImagen(actual.getImagen());
-			
-		}
+		else
+			panel.cambiarImagen(null);
 
+		//Cambiar color favorito
+		if (actual.getColorPreferido() != null)
+			panel.cambiarColor(actual.getColorPreferido());
+		else
+			panel.cambiarColor("");
 	}
 	
 	

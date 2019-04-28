@@ -1,31 +1,30 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
-import java.io.FileReader;
 import java.nio.file.Files;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
@@ -48,8 +47,15 @@ public class PanelGenerico extends JPanel {
 	protected JScrollPane scroll = new JScrollPane();
 	protected JButton abrirChooser = new JButton("Cargar imagen...");
 	protected JFileChooser chooser;
+	protected JTextField jtfColorPreferido = new JTextField(20);
+	protected JColorChooser jColorChooser;
+	protected JButton abrirColorChooser = new JButton();
 	private byte[] imagen;
+	private JPopupMenu jPopUp = new JPopupMenu();
 	protected GridBagConstraints gbc = new GridBagConstraints();
+	
+	private JPanel panel = new JPanel();
+
 	
 	public static int LOAD_FIRST = 0;
 	public static int LOAD_PREV = 1;
@@ -67,6 +73,7 @@ public class PanelGenerico extends JPanel {
 		this.setLayout(new BorderLayout());
 		this.add(getPanelCentral(), BorderLayout.CENTER);
 		
+
 	}
 	
 	/**
@@ -75,7 +82,6 @@ public class PanelGenerico extends JPanel {
 	 */
 	private JPanel getPanelCentral() {
 		
-		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 
 		double pesoCol1 = 0.15, pesoCol2 = 0.2;
@@ -149,6 +155,27 @@ public class PanelGenerico extends JPanel {
 		colocaComponente(1, 8, GridBagConstraints.WEST, pesoCol2, 0, GridBagConstraints.NORTH);
 		panel.add(jtfTelefono, gbc);
 		
+		//Color preferido
+		colocaComponente(0, 9, GridBagConstraints.EAST, pesoCol1, 0, GridBagConstraints.NORTH);
+		panel.add(new JLabel("Color preferido:"), gbc);
+		
+		colocaComponente(1, 9, GridBagConstraints.WEST, pesoCol2, 0, GridBagConstraints.NORTH);
+		panel.add(jtfColorPreferido, gbc);
+
+		colocaComponente(2, 9, GridBagConstraints.WEST, pesoCol2, 0, GridBagConstraints.WEST);
+		panel.add(abrirColorChooser, gbc);
+
+		abrirColorChooser.setIcon(CacheImagenes.getCacheImagenes().getIcono("iconoColores.png"));
+		abrirColorChooser.setPreferredSize(new Dimension(33,33));
+		
+		abrirColorChooser.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				seleccionarColor();
+			}
+		});
+
 		//Panel Scroll Imagen
 		scroll.setPreferredSize(new Dimension(150,150));
 		colocaComponente(2, 1, GridBagConstraints.WEST, 0.5,0, GridBagConstraints.NORTH);
@@ -167,6 +194,32 @@ public class PanelGenerico extends JPanel {
 		
 		panel.add(abrirChooser, gbc);
 		
+		//Menu contextual
+		configurarPopup();
+		scroll.addMouseListener(new MouseAdapter() {
+			
+           @Override
+            public void mouseClicked(MouseEvent e) {
+                showPopup(e);
+            }
+ 
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                showPopup(e);
+            }
+	 
+            /**
+             *
+             * @param e
+             */
+            private void showPopup(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    jPopUp.show(e.getComponent(),e.getX(), e.getY());
+                }
+            }
+			
+		} ); 
+				
 		return panel;
 	}
 	
@@ -185,11 +238,10 @@ public class PanelGenerico extends JPanel {
 		gbc.weightx = pesoColumna;
 		gbc.weighty = pesoFila;
 		gbc.fill = fill;
-		
 	}
 
 	/**
-	 * 
+	 * Metodo para inicalizar la JCB del sexo
 	 */
 	private void inicializarCBSexo() {
 		
@@ -202,7 +254,7 @@ public class PanelGenerico extends JPanel {
 	}
 
 	/**
-	 * 
+	 * Metodo para el JFileChooser
 	 */
 	private void seleccionarImagen() {
 		
@@ -210,14 +262,14 @@ public class PanelGenerico extends JPanel {
 		
 		chooser.setCurrentDirectory(new File("C:\\"));
 		
-		this.chooser.setFileSelectionMode(JFileChooser.FILES_ONLY); // S�lo selecciona ficheros
+		this.chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		
 		// Filtro del tipo de ficheros que puede abrir
 		this.chooser.setFileFilter(new FileFilter() {
 			
 			@Override
 			public String getDescription() {
-				return "Archivos de imagen *.gif";
+				return "Archivos de imagen *.gif, *.png, *.jpg";
 			}
 			
 			@Override
@@ -232,7 +284,7 @@ public class PanelGenerico extends JPanel {
 			}
 		});
 		
-		// Abro el di�logo para la elecci�n del usuario
+		// Dialogo para la elecci�n del usuario
 		int seleccionUsuario = chooser.showOpenDialog(null);
 		
 		if (seleccionUsuario == JFileChooser.APPROVE_OPTION) {
@@ -253,17 +305,81 @@ public class PanelGenerico extends JPanel {
 	}
 	
 	/**
-	 * 
+	 * Metodo para el JColorChooser
+	 */
+	private void seleccionarColor() {
+		
+		Color color = this.jColorChooser.showDialog(null, "Seleccione un color", Color.gray);
+		
+		if (color != null) {
+			
+			String strColor = "#"+Integer.toHexString(color.getRGB()).substring(2);
+			this.jtfColorPreferido.setText(strColor);
+			panel.setBackground(color);
+			panel.repaint();
+		}
+		
+	}
+	
+	
+	/**
+	 * Metodo para cambiar la imagen a la del registro actual
 	 * @param imagenAMostrar
 	 */
 	protected void cambiarImagen(byte[] imagenAMostrar) {		
 		//Cargar imagen de Longblob
-		ImageIcon icono = new ImageIcon(imagenAMostrar);
 		JLabel lblImagen = new JLabel();
-		lblImagen.setIcon(icono);
+		if (imagenAMostrar != null) {
+			ImageIcon icono = new ImageIcon(imagenAMostrar);
+			lblImagen.setIcon(icono);
+		}
+		else {
+			lblImagen.setIcon(CacheImagenes.getCacheImagenes().getIcono("SinImagen.png"));	
+		}
+		
 		scroll.setViewportView(lblImagen);
 	}
 	
+	/**
+	 * Metodo para cambiar el color cuando se cambie de registro
+	 * @param colorActual
+	 */
+	protected void cambiarColor(String colorActual) {
+		
+		this.jtfColorPreferido.setText(colorActual);
+		
+		if (!colorActual.equals("")) 
+			panel.setBackground(Color.decode(colorActual));
+		else 
+			panel.setBackground(Color.white);
+		
+		panel.repaint();
+
+	}
+	
+	/**
+	 * Metodo para configurar el JPopupMenu
+	 */
+	private void configurarPopup() {
+		
+		//Dimensiones
+		JMenuItem miDimensiones = new JMenuItem("Dimensiones: ");
+		jPopUp.add(miDimensiones);
+		
+		jPopUp.addSeparator();
+		
+		//Cambiar imagen
+		JMenuItem miCambiarImagen = new JMenuItem("Cambiar imagen");
+		miCambiarImagen.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				seleccionarImagen();			
+			}
+		});
+		
+		jPopUp.add(miCambiarImagen);
+	}
 	
 	/**
 	 * Getters y setters
@@ -309,5 +425,14 @@ public class PanelGenerico extends JPanel {
 	public void setImagen(byte[] imagen) {
 		this.imagen = imagen;
 	}
+
+	public String getJtfColorPreferido() {
+		return jtfColorPreferido.getText();
+	}
+
+	public void setJtfColorPreferido(String jtfColorPreferido) {
+		this.jtfColorPreferido.setText(jtfColorPreferido);;
+	}
+	
 	
 }
