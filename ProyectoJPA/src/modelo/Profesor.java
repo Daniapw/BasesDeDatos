@@ -2,6 +2,7 @@ package modelo;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import java.util.List;
 
 
 /**
@@ -9,6 +10,7 @@ import javax.persistence.*;
  * 
  */
 @Entity
+@Table(name="profesor")
 @NamedQuery(name="Profesor.findAll", query="SELECT p FROM Profesor p")
 public class Profesor extends Entidad implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -38,10 +40,14 @@ public class Profesor extends Entidad implements Serializable {
 
 	private String telefono;
 
-	//bi-directional many-to-one association to Tipologiasexo
+	//bi-directional many-to-one association to TipologiaSexo
 	@ManyToOne
 	@JoinColumn(name="idTipologiaSexo")
 	private TipologiaSexo tipologiaSexo;
+
+	//bi-directional many-to-one association to Valoracionmateria
+	@OneToMany(mappedBy="profesor")
+	private List<Valoracionmateria> valoracionMaterias;
 
 	public Profesor() {
 	}
@@ -130,8 +136,30 @@ public class Profesor extends Entidad implements Serializable {
 		return this.tipologiaSexo;
 	}
 
-	public void setTipologiaSexo(TipologiaSexo tipologiasexo) {
-		this.tipologiaSexo = tipologiasexo;
+	public void setTipologiaSexo(TipologiaSexo tipologiaSexo) {
+		this.tipologiaSexo = tipologiaSexo;
+	}
+
+	public List<Valoracionmateria> getValoracionMaterias() {
+		return this.valoracionMaterias;
+	}
+
+	public void setValoracionMaterias(List<Valoracionmateria> valoracionMaterias) {
+		this.valoracionMaterias = valoracionMaterias;
+	}
+
+	public Valoracionmateria addValoracionMateria(Valoracionmateria valoracionMateria) {
+		getValoracionMaterias().add(valoracionMateria);
+		valoracionMateria.setProfesor(this);
+
+		return valoracionMateria;
+	}
+
+	public Valoracionmateria removeValoracionMateria(Valoracionmateria valoracionMateria) {
+		getValoracionMaterias().remove(valoracionMateria);
+		valoracionMateria.setProfesor(null);
+
+		return valoracionMateria;
 	}
 
 	@Override

@@ -10,8 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -22,6 +22,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -44,19 +45,30 @@ public class PanelGenerico extends JPanel {
 	protected JTextField jtfDireccion = new JTextField(20);
 	protected JTextField jtfEmail = new JTextField(20);
 	protected JTextField jtfTelefono= new JTextField(20);
+	//ScrollPane con la imagen
 	protected JScrollPane scroll = new JScrollPane();
+	//Boton para abrir el JFileChooser
 	protected JButton abrirChooser = new JButton("Cargar imagen...");
 	protected JFileChooser chooser;
 	protected JTextField jtfColorPreferido = new JTextField(20);
+	//JColorChooser para elegir color preferido
 	protected JColorChooser jColorChooser;
 	protected JButton abrirColorChooser = new JButton();
+	//Imagen actual en bytes
 	private byte[] imagen;
+	//Imagen actual en icono (la necesito para que se actualice el JPopupMenu
+	private ImageIcon imagenJScroll = new ImageIcon();
+	//JPopupMenu con dimensiones y cambiar imagen
 	private JPopupMenu jPopUp = new JPopupMenu();
+	//JMenuItem que se actualizara segun la imagen que haya en el JScrollPane
+	private JMenuItem miDimensiones;
+	
+	//GridBagConstraints
 	protected GridBagConstraints gbc = new GridBagConstraints();
 	
 	private JPanel panel = new JPanel();
 
-	
+	//Opciones de la toolbar
 	public static int LOAD_FIRST = 0;
 	public static int LOAD_PREV = 1;
 	public static int LOAD_NEXT = 2;
@@ -66,7 +78,7 @@ public class PanelGenerico extends JPanel {
 	public static int REMOVE = 6;
 	
 	/**
-	 * 
+	 * Constructor
 	 */
 	public PanelGenerico() {
 		super();
@@ -77,7 +89,7 @@ public class PanelGenerico extends JPanel {
 	}
 	
 	/**
-	 * 
+	 * Metodo para obtener el panel principal
 	 * @return
 	 */
 	private JPanel getPanelCentral() {
@@ -86,7 +98,7 @@ public class PanelGenerico extends JPanel {
 
 		double pesoCol1 = 0.15, pesoCol2 = 0.2;
 
-		gbc.insets = new Insets(5, 5, 5, 5);
+		gbc.insets = new Insets(5, 2, 5, 2);
 		
 		//ID
 		colocaComponente(0, 0, GridBagConstraints.EAST, pesoCol1, 0, GridBagConstraints.NORTH);
@@ -155,18 +167,19 @@ public class PanelGenerico extends JPanel {
 		colocaComponente(1, 8, GridBagConstraints.WEST, pesoCol2, 0, GridBagConstraints.NORTH);
 		panel.add(jtfTelefono, gbc);
 		
-		//Color preferido
+		//JTF color preferido
 		colocaComponente(0, 9, GridBagConstraints.EAST, pesoCol1, 0, GridBagConstraints.NORTH);
 		panel.add(new JLabel("Color preferido:"), gbc);
 		
 		colocaComponente(1, 9, GridBagConstraints.WEST, pesoCol2, 0, GridBagConstraints.NORTH);
 		panel.add(jtfColorPreferido, gbc);
-
+		
+		//JBTColorChooser
 		colocaComponente(2, 9, GridBagConstraints.WEST, pesoCol2, 0, GridBagConstraints.WEST);
 		panel.add(abrirColorChooser, gbc);
 
 		abrirColorChooser.setIcon(CacheImagenes.getCacheImagenes().getIcono("iconoColores.png"));
-		abrirColorChooser.setPreferredSize(new Dimension(33,33));
+		abrirColorChooser.setPreferredSize(new Dimension(22,22));
 		
 		abrirColorChooser.addActionListener(new ActionListener() {
 			
@@ -177,12 +190,17 @@ public class PanelGenerico extends JPanel {
 		});
 
 		//Panel Scroll Imagen
-		scroll.setPreferredSize(new Dimension(150,150));
-		colocaComponente(2, 1, GridBagConstraints.WEST, 0.5,0, GridBagConstraints.NORTH);
+		scroll.setPreferredSize(new Dimension(110,110));
+		
+		gbc.gridheight = 3;
+
+		colocaComponente(2, 0, GridBagConstraints.WEST, 1, GridBagConstraints.NONE, GridBagConstraints.NORTH);
 		panel.add(scroll, gbc);
+		cambiarImagen(null);
+		gbc.gridheight = 1;
 		
 		//Boton Cargar Imagen
-		colocaComponente(2, 2, GridBagConstraints.WEST, pesoCol2,0, GridBagConstraints.NORTH);
+		colocaComponente(2, 3, GridBagConstraints.WEST, pesoCol2,0, GridBagConstraints.NORTH);
 		
 		abrirChooser.addActionListener(new ActionListener() {
 			
@@ -197,6 +215,11 @@ public class PanelGenerico extends JPanel {
 		//Menu contextual
 		configurarPopup();
 		scroll.addMouseListener(new MouseAdapter() {
+			
+           @Override
+            public void mousePressed(MouseEvent e) {
+                showPopup(e);
+            }
 			
            @Override
             public void mouseClicked(MouseEvent e) {
@@ -215,6 +238,8 @@ public class PanelGenerico extends JPanel {
             private void showPopup(MouseEvent e) {
                 if (e.isPopupTrigger()) {
                     jPopUp.show(e.getComponent(),e.getX(), e.getY());
+            		miDimensiones.setText("Dimensiones: " + imagenJScroll.getIconWidth() + "x" + imagenJScroll.getIconHeight());
+
                 }
             }
 			
@@ -224,7 +249,7 @@ public class PanelGenerico extends JPanel {
 	}
 	
 	/**
-	 * 
+	 * Metodo para configurar las GridBagConstraints
 	 * @param gridX
 	 * @param gridY
 	 * @param pesoColumna
@@ -293,7 +318,11 @@ public class PanelGenerico extends JPanel {
 			if (fichero.isFile()) {
 				try {
 					byte[] imagenEnBytes = Files.readAllBytes(fichero.toPath());
-					this.imagen = imagenEnBytes;
+					
+					ImageIcon icono = new ImageIcon(imagenEnBytes);
+					
+					this.imagen = elegirIcono(icono, seleccionUsuario, fichero, imagenEnBytes);
+					
 					cambiarImagen(imagen);
 				}
 				catch (Exception ex) {
@@ -305,11 +334,46 @@ public class PanelGenerico extends JPanel {
 	}
 	
 	/**
+	 * Metodo para que el usuario elija un icono que cumpla los requisitos
+	 * @param icono
+	 * @param seleccionUsuario
+	 * @param fichero
+	 * @param imagenEnBytes
+	 * @return
+	 */
+	private byte[] elegirIcono(ImageIcon icono, int seleccionUsuario, File fichero, byte[] imagenEnBytes) {
+		
+		while(icono.getIconHeight()>100 || icono.getIconWidth() > 100) {
+			
+			JOptionPane.showMessageDialog(null, "La imagen debe tener un tamaño de 100x100 o inferior");
+			
+			seleccionUsuario = chooser.showOpenDialog(null);
+			
+			fichero = this.chooser.getSelectedFile();
+			
+			try {
+				imagenEnBytes = Files.readAllBytes(fichero.toPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			icono = new ImageIcon(imagenEnBytes);
+			
+			if (seleccionUsuario == JFileChooser.CANCEL_OPTION) {
+				return this.imagen;
+			}
+			
+		}
+		
+		return imagenEnBytes;
+	}
+	
+	/**
 	 * Metodo para el JColorChooser
 	 */
 	private void seleccionarColor() {
 		
-		Color color = this.jColorChooser.showDialog(null, "Seleccione un color", Color.gray);
+		Color color = jColorChooser.showDialog(null, "Seleccione un color", Color.gray);
 		
 		if (color != null) {
 			
@@ -326,15 +390,19 @@ public class PanelGenerico extends JPanel {
 	 * Metodo para cambiar la imagen a la del registro actual
 	 * @param imagenAMostrar
 	 */
-	protected void cambiarImagen(byte[] imagenAMostrar) {		
+	protected void cambiarImagen(byte[] imagenAMostrar) {
+		
 		//Cargar imagen de Longblob
 		JLabel lblImagen = new JLabel();
 		if (imagenAMostrar != null) {
 			ImageIcon icono = new ImageIcon(imagenAMostrar);
 			lblImagen.setIcon(icono);
+			imagenJScroll = new ImageIcon(imagenAMostrar);
 		}
 		else {
-			lblImagen.setIcon(CacheImagenes.getCacheImagenes().getIcono("SinImagen.png"));	
+			imagenJScroll = CacheImagenes.getCacheImagenes().getIcono("SinImagen.png");
+			lblImagen.setIcon(imagenJScroll);	
+			this.imagen = null;
 		}
 		
 		scroll.setViewportView(lblImagen);
@@ -362,10 +430,8 @@ public class PanelGenerico extends JPanel {
 	 */
 	private void configurarPopup() {
 		
-		//Dimensiones
-		JMenuItem miDimensiones = new JMenuItem("Dimensiones: ");
+		miDimensiones = new JMenuItem("Dimensiones: " + imagenJScroll.getIconWidth() + "x" + imagenJScroll.getIconHeight());
 		jPopUp.add(miDimensiones);
-		
 		jPopUp.addSeparator();
 		
 		//Cambiar imagen
@@ -381,10 +447,9 @@ public class PanelGenerico extends JPanel {
 		jPopUp.add(miCambiarImagen);
 	}
 	
-	/**
-	 * Getters y setters
-	 * @return
-	 */
+	
+//////////////////////////////////////////////////////////GETTERS Y SETTERS////////////////////////////////////////////////////////////////////////////////////
+
 	
 	public JTextField getJtfID() {
 		return jtfID;
@@ -432,6 +497,14 @@ public class PanelGenerico extends JPanel {
 
 	public void setJtfColorPreferido(String jtfColorPreferido) {
 		this.jtfColorPreferido.setText(jtfColorPreferido);;
+	}
+
+	public ImageIcon getImagenJScroll() {
+		return imagenJScroll;
+	}
+
+	public void setImagenJScroll(ImageIcon imagenJScroll) {
+		this.imagenJScroll = imagenJScroll;
 	}
 	
 	

@@ -4,9 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
@@ -128,16 +126,16 @@ public class PanelGestionEstudiantes extends JPanel {
 	/**
 	 * 
 	 */
-	/**
-	 * 
-	 */
 	private void guardar () {
 		Estudiante nuevoRegistro = new Estudiante();
 		
-		if (this.panel.jtfID.getText().trim().equals("")) 
+		if (this.panel.jtfID.getText().trim().equals("")) {
 			nuevoRegistro.setId(0);
-		else 
+		}
+		else { 
 			nuevoRegistro.setId(Integer.parseInt(this.panel.jtfID.getText()));
+			nuevoRegistro.setImagen(panel.getImagen());
+		}
 		
 		nuevoRegistro.setNombre(this.panel.getJtfNombre().getText());
 		nuevoRegistro.setPrimerApellido(this.panel.getJtfPrimerApellido().getText());
@@ -147,12 +145,8 @@ public class PanelGestionEstudiantes extends JPanel {
 		nuevoRegistro.setEmail(this.panel.getJtfEmail().getText());
 		nuevoRegistro.setTelefono(this.panel.getJtfTelefono().getText());
 		nuevoRegistro.setTipologiaSexo((TipologiaSexo) panel.jcbSexo.getSelectedItem());
+		nuevoRegistro.setColorPreferido(panel.getJtfColorPreferido());
 		
-		if (panel.getImagen() != null)
-			nuevoRegistro.setImagen(panel.getImagen());
-		
-		if (!(actual.getColorPreferido() != null))
-			nuevoRegistro.setColorPreferido(panel.getJtfColorPreferido());
 		
 		if (nuevoRegistro.getId() == 0) {
 			EstudianteControlador.getInstancia().persist(nuevoRegistro);
@@ -214,20 +208,19 @@ public class PanelGestionEstudiantes extends JPanel {
 			panel.getJtfDireccion().setText(actual.getDireccion());
 			panel.getJtfEmail().setText(actual.getEmail());
 			panel.getJtfTelefono().setText(actual.getTelefono());
-			
+			panel.setImagen(actual.getImagen());
+
 			//Elegir sexo en JCB
 			for (int i = 0; i < panel.jcbSexo.getItemCount(); i++) {
 				
 				if (actual.getTipologiaSexo().getId() == panel.jcbSexo.getItemAt(i).getId()) {
-					
 					panel.jcbSexo.setSelectedIndex(i);
-					
 				}
 				
 			}
 			
 			//Cargar imagen de Longblob
-			if (actual.getImagen() != null)
+			if (panel.getImagen() != null)
 				panel.cambiarImagen(actual.getImagen());
 			else
 				panel.cambiarImagen(null);

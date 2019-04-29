@@ -70,6 +70,7 @@ public class Curso extends Entidad implements Serializable {
 	public String toString() {
 		// TODO Auto-generated method stub
 		return id + " " + descripcion;
+
 	}
 
 }

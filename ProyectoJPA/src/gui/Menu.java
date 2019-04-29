@@ -60,7 +60,7 @@ public class Menu extends JMenuBar {
 				JDialog dialogo = new JDialog();
 				dialogo.setResizable(false);
 				dialogo.setTitle("Gestion de estudiantes");
-				dialogo.setBounds(100, 100, 600, 500);
+				dialogo.setBounds(100, 100, 600, 450);
 				dialogo.setContentPane(new PanelGestionEstudiantes());
 				dialogo.setModal(true);
 				dialogo.setVisible(true);
@@ -77,7 +77,7 @@ public class Menu extends JMenuBar {
 				JDialog dialogo = new JDialog();
 				dialogo.setResizable(false);
 				dialogo.setTitle("Gestion de profesores");
-				dialogo.setBounds(100, 100, 650, 500);
+				dialogo.setBounds(100, 100, 600, 450);
 				dialogo.setContentPane(new PanelGestionProfesores());
 				dialogo.setModal(true);
 				dialogo.setVisible(true);

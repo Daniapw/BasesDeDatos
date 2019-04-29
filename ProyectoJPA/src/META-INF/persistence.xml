@@ -7,12 +7,12 @@
 		<class>modelo.Profesor</class>
 		<class>modelo.Valoracionmateria</class>
 		<class>modelo.TipologiaSexo</class>
-		<class>modelo.Tipologiasexo</class>
 		
 		<properties>		
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost/centroeducativo?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"/>
-            <!-- Linux:  <property name="javax.persistence.jdbc.url" value=jdbc:mysql://127.0.0.1:3306/centroeducativo> -->       
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://127.0.0.1:3306/centroeducativo"/>
+			<!-- Linux:  <property name="javax.persistence.jdbc.url" value="jdbc:mysql://127.0.0.1:3306/centroeducativo"/> -->
+            <!-- Windows: <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost/centroeducativo?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"/> -->       
             <property name="javax.persistence.jdbc.user" value="java"/>
             <property name="javax.persistence.jdbc.password" value="1234"/>
         </properties>

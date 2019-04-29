@@ -3,18 +3,12 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
 import gui.utils.CacheImagenes;
-import modelo.Estudiante;
 import modelo.Profesor;
 import modelo.TipologiaSexo;
 import modelo.controladores.EstudianteControlador;
@@ -132,16 +126,16 @@ public class PanelGestionProfesores extends JPanel{
 	/**
 	 * 
 	 */
-	/**
-	 * 
-	 */
 	private void guardar () {
 		Profesor nuevoRegistro = new Profesor();
 		
-		if (this.panel.jtfID.getText().trim().equals("")) 
+		if (this.panel.jtfID.getText().trim().equals("")) {
 			nuevoRegistro.setId(0);
-		else 
+		}
+		else { 
 			nuevoRegistro.setId(Integer.parseInt(this.panel.jtfID.getText()));
+			nuevoRegistro.setImagen(panel.getImagen());
+		}
 		
 		nuevoRegistro.setNombre(this.panel.getJtfNombre().getText());
 		nuevoRegistro.setPrimerApellido(this.panel.getJtfPrimerApellido().getText());
@@ -151,12 +145,7 @@ public class PanelGestionProfesores extends JPanel{
 		nuevoRegistro.setEmail(this.panel.getJtfEmail().getText());
 		nuevoRegistro.setTelefono(this.panel.getJtfTelefono().getText());
 		nuevoRegistro.setTipologiaSexo((TipologiaSexo) panel.jcbSexo.getSelectedItem());
-		
-		if (panel.getImagen() != null)
-			nuevoRegistro.setImagen(panel.getImagen());
-		
-		if (!(actual.getColorPreferido() != null))
-			nuevoRegistro.setColorPreferido(panel.getJtfColorPreferido());
+		nuevoRegistro.setColorPreferido(panel.getJtfColorPreferido());
 		
 		if (nuevoRegistro.getId() == 0) {
 			EstudianteControlador.getInstancia().persist(nuevoRegistro);
@@ -209,6 +198,7 @@ public class PanelGestionProfesores extends JPanel{
 	private void cargarDatosActual () {
 
 		if (this.actual != null) {
+			
 			panel.getJtfID().setText("" + actual.getId());
 			panel.getJtfNombre().setText(actual.getNombre());
 			panel.getJtfPrimerApellido().setText(actual.getPrimerApellido());			
@@ -217,32 +207,29 @@ public class PanelGestionProfesores extends JPanel{
 			panel.getJtfDireccion().setText(actual.getDireccion());
 			panel.getJtfEmail().setText(actual.getEmail());
 			panel.getJtfTelefono().setText(actual.getTelefono());
-
-		}
-		
-		//Cambiar JCB
-		for (int i = 0; i < panel.jcbSexo.getItemCount(); i++) {
+			panel.setImagen(actual.getImagen());
 			
-			if (actual.getTipologiaSexo().getId() == panel.jcbSexo.getItemAt(i).getId()) {
+			//Elegir sexo en JCB
+			for (int i = 0; i < panel.jcbSexo.getItemCount(); i++) {
 				
-				panel.jcbSexo.setSelectedIndex(i);
+				if (actual.getTipologiaSexo().getId() == panel.jcbSexo.getItemAt(i).getId()) {
+					panel.jcbSexo.setSelectedIndex(i);
+				}
 				
 			}
 			
+			//Cargar imagen de Longblob
+			if (panel.getImagen() != null)
+				panel.cambiarImagen(actual.getImagen());
+			else
+				panel.cambiarImagen(null);
+			
+			//Cambiar color favorito
+			if (actual.getColorPreferido() != null)
+				panel.cambiarColor(actual.getColorPreferido());
+			else
+				panel.cambiarColor("");
 		}
-		
-		//Cargar imagen de Longblob
-		if (actual.getImagen() != null)
-			panel.cambiarImagen(actual.getImagen());
-		else
-			panel.cambiarImagen(null);
-
-		//Cambiar color favorito
-		if (actual.getColorPreferido() != null)
-			panel.cambiarColor(actual.getColorPreferido());
-		else
-			panel.cambiarColor("");
 	}
-	
 	
 }
