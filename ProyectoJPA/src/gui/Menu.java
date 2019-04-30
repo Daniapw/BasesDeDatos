@@ -85,11 +85,28 @@ public class Menu extends JMenuBar {
 			}
 		});
         
+        JMenuItem miValoracionMaterias = new JMenuItem("Valoracion materias");
+        miValoracionMaterias.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				JDialog dialogo = new JDialog();
+				dialogo.setResizable(false);
+				dialogo.setTitle("Gestion de notas");
+				dialogo.setBounds(100, 100, 600, 450);
+				dialogo.setContentPane(new PanelGestionValoracionMaterias());
+				dialogo.setModal(true);
+				dialogo.setVisible(true);
+				
+			}
+		});
+        
         menuArchivo.add(miCursoAcademico);
         menuArchivo.add(miMaterias);
         menuArchivo.add(miEstudiantes);
         menuArchivo.add(miProfesores);
-
+        menuArchivo.add(miValoracionMaterias);
         
         this.add(menuArchivo);
 	}

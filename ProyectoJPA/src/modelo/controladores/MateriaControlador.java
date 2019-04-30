@@ -6,6 +6,7 @@ import java.util.List;
 import modelo.Curso;
 import modelo.Entidad;
 import modelo.Materia;
+import modelo.TipologiaSexo;
 
 public class MateriaControlador extends Controlador{
 	
@@ -55,8 +56,19 @@ public class MateriaControlador extends Controlador{
 		return (Materia) super.findPrevious(e);
 	}
 
-
-
+	public List<Materia> findAllMateria() {
+		
+		List<Materia> materias = new ArrayList<Materia>();
+		List<Entidad> entidades = super.findAll();
+		
+		for (Entidad entidad : entidades) {
+			
+			materias.add((Materia) entidad);
+		}
+		
+		
+		return materias;
+	}
 	
 	
 }

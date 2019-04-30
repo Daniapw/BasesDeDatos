@@ -299,9 +299,9 @@ public class PanelGenerico extends JPanel {
 			
 			@Override
 			public boolean accept(File f) {
-				if ((f.isFile() && (f.getAbsolutePath().endsWith(".gif") || 
+				if ((f.isDirectory() || f.isFile() && ((f.getAbsolutePath().endsWith(".gif") || 
 						f.getAbsolutePath().endsWith(".png") ||
-						f.getAbsolutePath().endsWith(".jpg") ))) 
+						f.getAbsolutePath().endsWith(".jpg") )))) 
 					
 					return true;
 				
@@ -416,7 +416,7 @@ public class PanelGenerico extends JPanel {
 		
 		this.jtfColorPreferido.setText(colorActual);
 		
-		if (!colorActual.equals("")) 
+		if (!colorActual.trim().equals("")) 
 			panel.setBackground(Color.decode(colorActual));
 		else 
 			panel.setBackground(Color.white);

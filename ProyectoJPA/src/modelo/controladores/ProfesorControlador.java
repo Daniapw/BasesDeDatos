@@ -1,6 +1,10 @@
 package modelo.controladores;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import modelo.Entidad;
+import modelo.Materia;
 import modelo.Profesor;
 
 public class ProfesorControlador extends Controlador {
@@ -51,4 +55,17 @@ public class ProfesorControlador extends Controlador {
 		return (Profesor) super.findPrevious(e);
 	}
 	
+	public List<Profesor> findAllProfesor() {
+		
+		List<Profesor> profesores = new ArrayList<Profesor>();
+		List<Entidad> entidades = super.findAll();
+		
+		for (Entidad entidad : entidades) {
+			
+			profesores.add((Profesor) entidad);
+		}
+		
+		
+		return profesores;
+	}
 }
