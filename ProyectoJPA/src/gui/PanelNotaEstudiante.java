@@ -1,5 +1,8 @@
 package gui;
 
+import java.awt.Dimension;
+import java.awt.Font;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -9,7 +12,7 @@ import modelo.Estudiante;
 public class PanelNotaEstudiante extends JPanel {
 
 	private JLabel nombreEstudiante = new JLabel();
-	private JTextField notaEstudiante = new JTextField(20);
+	private JTextField notaEstudiante = new JTextField();
 	private Estudiante estudiante;
 	
 	/**
@@ -17,12 +20,13 @@ public class PanelNotaEstudiante extends JPanel {
 	 * @param est
 	 */
 	public PanelNotaEstudiante(Estudiante est) {
-		
 		this.estudiante = est;
 		this.nombreEstudiante.setText(est.getNombre() + " " + est.getPrimerApellido() + " " + est.getSegundoApellido());
 		
 		this.add(nombreEstudiante);
 		this.add(notaEstudiante);
+		
+		notaEstudiante.setPreferredSize(new Dimension(20, 20));
 	}
 
 	

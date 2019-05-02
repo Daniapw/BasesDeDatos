@@ -5,9 +5,11 @@ import javax.swing.JPanel;
 import modelo.Estudiante;
 import modelo.Materia;
 import modelo.Profesor;
+import modelo.Valoracionmateria;
 import modelo.controladores.EstudianteControlador;
 import modelo.controladores.MateriaControlador;
 import modelo.controladores.ProfesorControlador;
+import modelo.controladores.ValoracionMateriaControlador;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
@@ -19,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.BoxLayout;
 
 public class PanelGestionValoracionMaterias extends JPanel {
 	
@@ -35,6 +36,9 @@ public class PanelGestionValoracionMaterias extends JPanel {
 	private JPanel panelAlumnos = new JPanel();
 	//Lista paneles notas
 	private List<PanelNotaEstudiante> panelesNotas= new ArrayList<PanelNotaEstudiante>();
+	
+	//Registro actual
+	private Valoracionmateria actual;
 	
 	/**
 	 * Codigo generado por WindowBuilder.
@@ -97,16 +101,16 @@ public class PanelGestionValoracionMaterias extends JPanel {
 		GridBagLayout gbl_panelAlumnos = new GridBagLayout();
 		gbl_panelAlumnos.columnWidths = new int[] {0};
 		gbl_panelAlumnos.rowHeights = new int[]{0};
-		gbl_panelAlumnos.columnWeights = new double[]{0.4, 0.8};
-		gbl_panelAlumnos.rowWeights = new double[]{Double.MIN_VALUE};
-		
-		panelAlumnos.setLayout(gbl_panelAlumnos);
 
+		panelAlumnos.setLayout(gbl_panelAlumnos);
+		
 		//Cargar JCBs
 		cargarJCBs();
 		
 		//Generar paneles con las notas de los estudiantes
 		generarPanelesNotas();
+		
+		
 	}
 	
 	/**
@@ -134,6 +138,8 @@ public class PanelGestionValoracionMaterias extends JPanel {
 	private void generarPanelesNotas() {
 		
 		GridBagConstraints gbc_panelAlumnos = new GridBagConstraints();
+		
+		gbc_panelAlumnos.insets = new Insets(5, 5, 5, 5);
 		
 		List<Estudiante> estudiantes = EstudianteControlador.getInstancia().findAllEstudiante();
 		Estudiante estActual;
