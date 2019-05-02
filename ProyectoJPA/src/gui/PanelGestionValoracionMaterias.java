@@ -94,7 +94,13 @@ public class PanelGestionValoracionMaterias extends JPanel {
 		panelBtnGuardar.add(jbtGuardar);
 		
 		add(panelAlumnos, BorderLayout.CENTER);
-		panelAlumnos.setLayout(new BoxLayout(panelAlumnos, BoxLayout.Y_AXIS));
+		GridBagLayout gbl_panelAlumnos = new GridBagLayout();
+		gbl_panelAlumnos.columnWidths = new int[] {0};
+		gbl_panelAlumnos.rowHeights = new int[]{0};
+		gbl_panelAlumnos.columnWeights = new double[]{0.4, 0.8};
+		gbl_panelAlumnos.rowWeights = new double[]{Double.MIN_VALUE};
+		
+		panelAlumnos.setLayout(gbl_panelAlumnos);
 
 		//Cargar JCBs
 		cargarJCBs();
@@ -127,20 +133,39 @@ public class PanelGestionValoracionMaterias extends JPanel {
 	 */
 	private void generarPanelesNotas() {
 		
+		GridBagConstraints gbc_panelAlumnos = new GridBagConstraints();
+		
 		List<Estudiante> estudiantes = EstudianteControlador.getInstancia().findAllEstudiante();
+		Estudiante estActual;
+		int contadorEstActual = 0;
 		
 		PanelNotaEstudiante panelNota;
 		
-		for (Estudiante est: estudiantes) {
+		for (int i = 0; i < estudiantes.size(); i++) {
 			
-			//Crear panel del estudiante actual
-			panelNota = new PanelNotaEstudiante(est);
+			for (int j = 0; j <= 1; j++ ) {
+				
+				estActual = estudiantes.get(contadorEstActual);
+				
+				gbc_panelAlumnos.gridx = j;
+				gbc_panelAlumnos.gridy = i;
+				
+				//Crear panel del estudiante actual
+				panelNota = new PanelNotaEstudiante(estActual);
+				
+				//Anadirlo a la lista de PanelNotaEstudiante, el que muestra el nombre y la nota 
+				panelesNotas.add(panelNota);
+				
+				//Anadir el panel que acabo de crear al panel central
+				panelAlumnos.add(panelNota.getComponent(j), gbc_panelAlumnos);
+				
+				
+			}
 			
-			//Anadirlo a la lista de PanelNotaEstudiante, el que muestra el nombre y la nota 
-			panelesNotas.add(panelNota);
+			contadorEstActual++;
 			
-			//Anadir el panel que acabo de crear al panel central
-			panelAlumnos.add(panelNota);
 		}
+		
+
 	}
 }

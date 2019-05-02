@@ -46,6 +46,21 @@ public class PanelNotaEstudiante extends JPanel {
 	public void setNotaEstudiante(String notaEstudiante) {
 		this.notaEstudiante.setText(notaEstudiante);
 	}
+
+
+	public JLabel getNombreEstudiante() {
+		return nombreEstudiante;
+	}
+
+
+	public void setNombreEstudiante(JLabel nombreEstudiante) {
+		this.nombreEstudiante = nombreEstudiante;
+	}
+
+
+	public void setNotaEstudiante(JTextField notaEstudiante) {
+		this.notaEstudiante = notaEstudiante;
+	}
 	
 	
 }
