@@ -17,6 +17,8 @@ import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import javax.swing.JComboBox;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,6 +63,7 @@ public class PanelGestionValoracionMaterias extends JPanel {
 		gbc_lblNewLabel.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel.gridx = 0;
 		gbc_lblNewLabel.gridy = 0;
+		gbc_lblNewLabel.insets = new Insets(5,5,5,5);
 		panelJCBs.add(lblNewLabel, gbc_lblNewLabel);
 		
 		GridBagConstraints gbc_jcbMaterias = new GridBagConstraints();
@@ -69,6 +72,7 @@ public class PanelGestionValoracionMaterias extends JPanel {
 		gbc_jcbMaterias.anchor = GridBagConstraints.WEST;
 		gbc_jcbMaterias.gridx = 1;
 		gbc_jcbMaterias.gridy = 0;
+		gbc_jcbMaterias.insets = new Insets(5,5,5,5);
 		panelJCBs.add(jcbMaterias, gbc_jcbMaterias);
 		
 		JLabel lblNewLabel_1 = new JLabel("Profesor:");
@@ -77,6 +81,7 @@ public class PanelGestionValoracionMaterias extends JPanel {
 		gbc_lblNewLabel_1.insets = new Insets(0, 0, 0, 5);
 		gbc_lblNewLabel_1.gridx = 0;
 		gbc_lblNewLabel_1.gridy = 1;
+		gbc_lblNewLabel_1.insets = new Insets(5,5,5,5);
 		panelJCBs.add(lblNewLabel_1, gbc_lblNewLabel_1);
 		
 		GridBagConstraints gbc_jcbProfesores = new GridBagConstraints();
@@ -84,16 +89,38 @@ public class PanelGestionValoracionMaterias extends JPanel {
 		gbc_jcbProfesores.fill = GridBagConstraints.HORIZONTAL;
 		gbc_jcbProfesores.gridx = 1;
 		gbc_jcbProfesores.gridy = 1;
+		gbc_jcbProfesores.insets = new Insets(5,5,5,5);
 		panelJCBs.add(jcbProfesores, gbc_jcbProfesores);
 		
 		GridBagConstraints gbc_jbtRefrescarAlumnado = new GridBagConstraints();
 		gbc_jbtRefrescarAlumnado.insets = new Insets(0, 15, 0, 0);
 		gbc_jbtRefrescarAlumnado.gridx = 2;
 		gbc_jbtRefrescarAlumnado.gridy = 1;
+		gbc_jbtRefrescarAlumnado.insets = new Insets(5,5,5,5);
 		panelJCBs.add(jbtRefrescarAlumnado, gbc_jbtRefrescarAlumnado);
+		
+		//Funcionalidad boton refrescar
+		jbtRefrescarAlumnado.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				generarPanelesNotas();
+				
+			}
+		});
 		
 		JPanel panelBtnGuardar = new JPanel();
 		add(panelBtnGuardar, BorderLayout.SOUTH);
+		
+		//Configurar JBT Guardar
+		jbtGuardar.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				guardar();
+				
+			}
+		});
 		
 		panelBtnGuardar.add(jbtGuardar);
 		
@@ -101,7 +128,7 @@ public class PanelGestionValoracionMaterias extends JPanel {
 		GridBagLayout gbl_panelAlumnos = new GridBagLayout();
 		gbl_panelAlumnos.columnWidths = new int[] {0};
 		gbl_panelAlumnos.rowHeights = new int[]{0};
-
+	
 		panelAlumnos.setLayout(gbl_panelAlumnos);
 		
 		//Cargar JCBs
@@ -133,6 +160,27 @@ public class PanelGestionValoracionMaterias extends JPanel {
 	}
 	
 	/**
+	 * Metodo guardar
+	 */
+	private void guardar() {
+
+		Valoracionmateria nuevoRegistro = new Valoracionmateria();
+		
+		for (PanelNotaEstudiante panel : panelesNotas) {
+			
+			nuevoRegistro.setId(0);
+			nuevoRegistro.setEstudiante(panel.getEstudiante());
+			nuevoRegistro.setMateria(panel.getMateria());
+			nuevoRegistro.setProfesor(panel.getProfesor());
+			nuevoRegistro.setValoracion(panel.getNotaEstudiante());
+			
+			ValoracionMateriaControlador.getInstancia().persist(nuevoRegistro);
+		}
+		
+		
+	}
+	
+	/**
 	 * Generar paneles de estudiantes y aniadirlos al panel central
 	 */
 	private void generarPanelesNotas() {
@@ -141,37 +189,32 @@ public class PanelGestionValoracionMaterias extends JPanel {
 		
 		gbc_panelAlumnos.insets = new Insets(5, 5, 5, 5);
 		
+		panelAlumnos.removeAll();
+		panelesNotas.clear();
 		List<Estudiante> estudiantes = EstudianteControlador.getInstancia().findAllEstudiante();
 		Estudiante estActual;
-		int contadorEstActual = 0;
 		
 		PanelNotaEstudiante panelNota;
 		
 		for (int i = 0; i < estudiantes.size(); i++) {
 			
-			for (int j = 0; j <= 1; j++ ) {
-				
-				estActual = estudiantes.get(contadorEstActual);
-				
-				gbc_panelAlumnos.gridx = j;
-				gbc_panelAlumnos.gridy = i;
-				
-				//Crear panel del estudiante actual
-				panelNota = new PanelNotaEstudiante(estActual);
-				
-				//Anadirlo a la lista de PanelNotaEstudiante, el que muestra el nombre y la nota 
-				panelesNotas.add(panelNota);
-				
-				//Anadir el panel que acabo de crear al panel central
-				panelAlumnos.add(panelNota.getComponent(j), gbc_panelAlumnos);
-				
-				
-			}
+			estActual = estudiantes.get(i);
 			
-			contadorEstActual++;
+			gbc_panelAlumnos.gridx = 0;
+			gbc_panelAlumnos.gridy = i;
 			
+			//Crear panel del estudiante actual
+			panelNota = new PanelNotaEstudiante(estActual, (Profesor) jcbProfesores.getSelectedItem(), (Materia) jcbMaterias.getSelectedItem());
+			
+			//Anadir el panel que acabo de crear al panel central
+			panelAlumnos.add(panelNota, gbc_panelAlumnos);
+
+			//Anadirlo a la lista de PanelNotaEstudiante, el que muestra el nombre y la nota 
+			panelesNotas.add(panelNota);
+						
 		}
 		
-
+		this.revalidate();
+		this.repaint();
 	}
 }
