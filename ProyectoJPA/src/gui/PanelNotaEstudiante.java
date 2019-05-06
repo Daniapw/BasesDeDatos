@@ -69,7 +69,6 @@ public class PanelNotaEstudiante extends JPanel {
 	}
 	
 	public float getNotaEstudiante() {
-		System.out.println("Panel para " + this.estudiante.getNombre() + " nota: " + notaEstudiante.getText() + " hc: " + this.hashCode());
 		try {
 			return Float.parseFloat(notaEstudiante.getText());
 		}

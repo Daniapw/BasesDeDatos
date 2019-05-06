@@ -14,6 +14,8 @@ import modelo.controladores.ValoracionMateriaControlador;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.GridBagConstraints;
 import javax.swing.JComboBox;
 import java.awt.Insets;
@@ -168,16 +170,27 @@ public class PanelGestionValoracionMaterias extends JPanel {
 		
 		for (PanelNotaEstudiante panel : panelesNotas) {
 			
-			nuevoRegistro.setId(0);
 			nuevoRegistro.setEstudiante(panel.getEstudiante());
 			nuevoRegistro.setMateria(panel.getMateria());
 			nuevoRegistro.setProfesor(panel.getProfesor());
 			nuevoRegistro.setValoracion(panel.getNotaEstudiante());
 			
-			ValoracionMateriaControlador.getInstancia().persist(nuevoRegistro);
+			//Buscar si existe un registro con el controlador y guardar el resultado
+			Valoracionmateria registroBuscado = ValoracionMateriaControlador.getInstancia().findByProfesorEstudianteMateria(nuevoRegistro);
+			
+			if (registroBuscado == null) {
+				nuevoRegistro.setId(0);
+				ValoracionMateriaControlador.getInstancia().persist(nuevoRegistro);
+			}
+			else {
+				nuevoRegistro.setId(registroBuscado.getId());
+				ValoracionMateriaControlador.getInstancia().merge(nuevoRegistro);
+			}
+			
+			
 		}
 		
-		
+		JOptionPane.showMessageDialog(null, "Guardado correctamente");
 	}
 	
 	/**
