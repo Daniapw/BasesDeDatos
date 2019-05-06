@@ -12,6 +12,7 @@ import modelo.controladores.ProfesorControlador;
 import modelo.controladores.ValoracionMateriaControlador;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -35,7 +36,7 @@ public class PanelGestionValoracionMaterias extends JPanel {
 	//Boton Refrescar
 	private JButton jbtRefrescarAlumnado = new JButton("Refrescar alumnado");
 	//Boton guardar
-	private JButton jbtGuardar = new JButton("Guardar");
+	private JButton jbtGuardar = new JButton("Guardar resultados del alumnado");
 	//Panel alumnos
 	private JPanel panelAlumnos = new JPanel();
 	//Lista paneles notas
@@ -173,7 +174,7 @@ public class PanelGestionValoracionMaterias extends JPanel {
 			nuevoRegistro.setEstudiante(panel.getEstudiante());
 			nuevoRegistro.setMateria(panel.getMateria());
 			nuevoRegistro.setProfesor(panel.getProfesor());
-			nuevoRegistro.setValoracion(panel.getNotaEstudiante());
+			nuevoRegistro.setValoracion( panel.getNotaEstudiante());
 			
 			//Buscar si existe un registro con el controlador y guardar el resultado
 			Valoracionmateria registroBuscado = ValoracionMateriaControlador.getInstancia().findByProfesorEstudianteMateria(nuevoRegistro);

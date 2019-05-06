@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -8,7 +9,11 @@ import java.awt.Insets;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 
 import modelo.Estudiante;
 import modelo.Materia;
@@ -17,7 +22,7 @@ import modelo.Profesor;
 public class PanelNotaEstudiante extends JPanel {
 
 	private JLabel nombreEstudiante = new JLabel();
-	private JTextField notaEstudiante = new JTextField();
+	private JSpinner notaEstudiante = new JSpinner();
 	private Estudiante estudiante;
 	private Profesor profesor;
 	private Materia materia;
@@ -30,7 +35,7 @@ public class PanelNotaEstudiante extends JPanel {
 		this.estudiante = est;
 		this.profesor = prof;
 		this.materia = mat;
-		
+
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		setLayout(gridBagLayout);
 		
@@ -38,19 +43,29 @@ public class PanelNotaEstudiante extends JPanel {
 		GridBagConstraints gbc_lblNombre = new GridBagConstraints();
 		gbc_lblNombre.insets = new Insets(0, 0, 0, 5);
 		gbc_lblNombre.anchor = GridBagConstraints.EAST;
+		gbc_lblNombre.fill = GridBagConstraints.BOTH;
 		gbc_lblNombre.gridx = 0;
 		gbc_lblNombre.gridy = 0;
 		
-		this.nombreEstudiante.setText(est.getNombre() + " " + est.getPrimerApellido() + " " + est.getSegundoApellido());
+		nombreEstudiante.setPreferredSize(new Dimension(180,20));
+		nombreEstudiante.setHorizontalAlignment(SwingConstants.RIGHT);
+		
+		this.nombreEstudiante.setText(est.getNombre() + " " + est.getPrimerApellido() + " " + est.getSegundoApellido() + ":");
 		this.add(nombreEstudiante, gbc_lblNombre);
 
 		//Colocar JTextField nota
 		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.anchor = GridBagConstraints.WEST;
-		gbc_textField.gridx = 1;
+		gbc_textField.anchor = GridBagConstraints.EAST;
+		gbc_lblNombre.gridx = 1;
 		gbc_textField.gridy = 0;
-		notaEstudiante.setPreferredSize(new Dimension(25, 20));
 
+		//Hay que introducir los limites del SpinnerNumberModel como objetos Float para que getValue() devuelva un float
+		Float uno=new Float(1);
+		Float diez=new Float(10);
+		SpinnerModel modelo = new SpinnerNumberModel(uno, uno, diez, uno);
+		notaEstudiante.setModel(modelo);
+		
+		notaEstudiante.setPreferredSize(new Dimension(90,20));
 		this.add(notaEstudiante, gbc_textField);
 	}
 
@@ -68,18 +83,12 @@ public class PanelNotaEstudiante extends JPanel {
 		this.estudiante = estudiante;
 	}
 	
-	public float getNotaEstudiante() {
-		try {
-			return Float.parseFloat(notaEstudiante.getText());
-		}
-		catch (Exception e) {
-			e.printStackTrace();;
-		}
-		return 0;
+	public Float getNotaEstudiante() {
+		return  ((Float) notaEstudiante.getValue());
 	}
 
-	public void setNotaEstudiante(String notaEstudiante) {
-		this.notaEstudiante.setText(notaEstudiante);
+	public void setNotaEstudiante(Float notaEstudiante) {
+		this.notaEstudiante.setValue(notaEstudiante);
 	}
 
 
@@ -90,11 +99,6 @@ public class PanelNotaEstudiante extends JPanel {
 
 	public void setNombreEstudiante(JLabel nombreEstudiante) {
 		this.nombreEstudiante = nombreEstudiante;
-	}
-
-
-	public void setNotaEstudiante(JTextField notaEstudiante) {
-		this.notaEstudiante = notaEstudiante;
 	}
 
 
