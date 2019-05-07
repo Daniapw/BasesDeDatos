@@ -165,7 +165,7 @@ public class Estudiante extends Entidad implements Serializable {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return null;
+		return nombre + " " + primerApellido + " " + segundoApellido;
 	}
 
 }

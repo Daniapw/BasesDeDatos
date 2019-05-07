@@ -12,7 +12,6 @@ import modelo.controladores.ProfesorControlador;
 import modelo.controladores.ValoracionMateriaControlador;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -227,6 +226,22 @@ public class PanelGestionValoracionMaterias extends JPanel {
 			panelesNotas.add(panelNota);
 						
 		}
+
+		
+		//Reflejar en GUI notas de los estudiantes si existen
+		Valoracionmateria actual = new Valoracionmateria();
+		
+		for (PanelNotaEstudiante panel:panelesNotas) {
+			
+			actual=new Valoracionmateria(panel.getEstudiante(), panel.getProfesor(), panel.getMateria());
+			
+			Valoracionmateria registroEncontrado = ValoracionMateriaControlador.getInstancia().findByProfesorEstudianteMateria(actual);
+			
+			if (registroEncontrado != null) panel.setNotaEstudiante(registroEncontrado.getValoracion());
+				
+			
+		}
+		
 		
 		this.revalidate();
 		this.repaint();

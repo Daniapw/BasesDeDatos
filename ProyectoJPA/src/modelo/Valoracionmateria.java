@@ -38,6 +38,14 @@ public class Valoracionmateria extends Entidad implements Serializable {
 	public Valoracionmateria() {
 	}
 
+	public Valoracionmateria(Estudiante est, Profesor p, Materia m) {
+		
+		this.estudiante=est;
+		this.profesor=p;
+		this.materia=m;
+		
+	}
+	
 	public int getId() {
 		return this.id;
 	}
