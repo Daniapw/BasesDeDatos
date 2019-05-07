@@ -15,9 +15,11 @@ import javax.swing.JSlider;
 import modelo.Estudiante;
 import modelo.Materia;
 import modelo.Profesor;
+import modelo.Valoracionmateria;
 import modelo.controladores.EstudianteControlador;
 import modelo.controladores.MateriaControlador;
 import modelo.controladores.ProfesorControlador;
+import modelo.controladores.ValoracionMateriaControlador;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -259,9 +261,50 @@ public class PanelGestionValoracionMateria2 extends JPanel {
 	}
 	
 	/**
+	 * Metodo guardar
+	 */
+	private void guardar() {
+
+		for (int i = 0; i < defaultModelJListSelec.getSize(); i++) {
+			
+			Valoracionmateria nuevoRegistro = new Valoracionmateria(defaultModelJListSelec.getElementAt(i), 
+					(Profesor) jcbProfesor.getSelectedItem(), (Materia) jcbMateria.getSelectedItem());
+			
+			nuevoRegistro.setValoracion((float) jSliderNota.getValue());
+			
+			//Buscar si existe un registro con el controlador y guardar el resultado
+			Valoracionmateria registroBuscado = ValoracionMateriaControlador.getInstancia().findByProfesorEstudianteMateria(nuevoRegistro);
+			
+			if (registroBuscado == null) {
+				nuevoRegistro.setId(0);
+				ValoracionMateriaControlador.getInstancia().persist(nuevoRegistro);
+			}
+			else {
+				nuevoRegistro.setId(registroBuscado.getId());
+				ValoracionMateriaControlador.getInstancia().merge(nuevoRegistro);
+			}
+			
+			
+		}
+		
+		JOptionPane.showMessageDialog(null, "Guardado correctamente");
+	}
+	
+	
+	/**
 	 * Metodo para configurar los botones
 	 */
 	private void configurarBotones() {
+		
+		//Guardar
+		jbtGuardarNotas.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				guardar();
+				
+			}
+		});
 		
 		//Boton quitar todos
 		jbtQuitarTodos.addActionListener(new ActionListener() {
