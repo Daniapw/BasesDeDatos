@@ -301,7 +301,11 @@ public class PanelGestionValoracionMateria2 extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				guardar();
+				
+				if (defaultModelJListSelec.isEmpty())
+					JOptionPane.showMessageDialog(null, "No hay ningun alumno seleccionado");
+				else
+					guardar();
 				
 			}
 		});
@@ -384,6 +388,24 @@ public class PanelGestionValoracionMateria2 extends JPanel {
 			}
 		});
 		
+		//Boton actualizar alumnado
+		jbtActualizarAlumnos.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Estudiante est;
+				
+				for (int i = 0; i < defaultModelJListSelec.getSize(); i++) {
+					
+					est = defaultModelJListSelec.get(i);
+					defaultModelJListNoSelec.addElement(est);
+					
+				}
+				
+				defaultModelJListSelec.removeAllElements();	
+				
+			}
+		});
 		
 	}
 	
