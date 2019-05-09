@@ -119,13 +119,31 @@ public class Menu extends JMenuBar {
 			}
 		});
         
+        JMenuItem miPanelTablaNotas = new JMenuItem("Tabla HTML Notas");
+        miPanelTablaNotas.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				JDialog dialogo = new JDialog();
+				dialogo.setResizable(false);
+				dialogo.setTitle("Notas del curso");
+				dialogo.setBounds(100, 100, 610, 450);
+				dialogo.setContentPane(new PanelTablaNotas());
+				dialogo.setModal(true);
+				dialogo.setVisible(true);
+				
+			}
+		});
+        
         menuArchivo.add(miCursoAcademico);
         menuArchivo.add(miMaterias);
         menuArchivo.add(miEstudiantes);
         menuArchivo.add(miProfesores);
         menuArchivo.add(miValoracionMaterias);
         menuArchivo.add(miValoracionMaterias2);
-
+        menuArchivo.add(miPanelTablaNotas);
+        
         this.add(menuArchivo);
 	}
 	
