@@ -2,6 +2,7 @@ package modelo;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import java.util.Date;
 
 
 /**
@@ -17,6 +18,9 @@ public class Valoracionmateria extends Entidad implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
+
+	@Temporal(TemporalType.DATE)
+	private Date fecha;
 
 	private float valoracion;
 
@@ -38,11 +42,11 @@ public class Valoracionmateria extends Entidad implements Serializable {
 	public Valoracionmateria() {
 	}
 
-	public Valoracionmateria(Estudiante est, Profesor p, Materia m) {
+	public Valoracionmateria(Estudiante est, Profesor prof, Materia mat) {
 		
-		this.estudiante=est;
-		this.profesor=p;
-		this.materia=m;
+		this.profesor = prof;
+		this.materia = mat;
+		this.estudiante = est;
 		
 	}
 	
@@ -52,6 +56,14 @@ public class Valoracionmateria extends Entidad implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public Date getFecha() {
+		return this.fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
 	}
 
 	public float getValoracion() {

@@ -8,6 +8,11 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -27,6 +32,10 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
+import java.awt.Dimension;
+
+import javax.swing.JScrollPane;
+import javax.swing.JFormattedTextField;
 
 public class PanelGestionValoracionMateria2 extends JPanel {
 
@@ -48,7 +57,13 @@ public class PanelGestionValoracionMateria2 extends JPanel {
 	private JButton jbtSeleccionarTodos = new JButton(">>");
 	//JButton para guardar
 	private JButton jbtGuardarNotas = new JButton("Guardar notas del alumnado");
-	private JButton jbtActualizarAlumnos = new JButton("Actualizar alumnado");
+	//JButton resetear
+	private JButton jbtActualizarAlumnos = new JButton("Resetear alumnos seleccionados");
+	//JScrollPanes de las JList
+	private JScrollPane jScrollNoSelec = new JScrollPane();
+	private JScrollPane jScrollSeleccionados = new JScrollPane();
+	//JFormattedTextField de la fecha
+	private JFormattedTextField jFormattedFecha = new JFormattedTextField();
 
 
 	/**
@@ -62,21 +77,20 @@ public class PanelGestionValoracionMateria2 extends JPanel {
 		add(panelJCBs, BorderLayout.NORTH);
 		GridBagLayout gbl_panelJCBs = new GridBagLayout();
 		gbl_panelJCBs.columnWidths = new int[] {0, 0, 2};
-		gbl_panelJCBs.rowHeights = new int[] {0, 0, 0, 0, 2};
+		gbl_panelJCBs.rowHeights = new int[] {0, 0, 0, 0, 0, 2};
 		gbl_panelJCBs.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_panelJCBs.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelJCBs.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panelJCBs.setLayout(gbl_panelJCBs);
 		
 		JLabel lblNewLabel = new JLabel("Materia:");
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel.insets = new Insets(0, 5, 5, 5);
 		gbc_lblNewLabel.gridx = 0;
 		gbc_lblNewLabel.gridy = 0;
 		panelJCBs.add(lblNewLabel, gbc_lblNewLabel);
 		
 		GridBagConstraints gbc_jcbMateria = new GridBagConstraints();
-		gbc_jcbMateria.insets = new Insets(5, 5, 5, 0);
+		gbc_jcbMateria.insets = new Insets(5, 5, 5, 5);
 		gbc_jcbMateria.fill = GridBagConstraints.HORIZONTAL;
 		gbc_jcbMateria.gridx = 1;
 		gbc_jcbMateria.gridy = 0;
@@ -84,20 +98,19 @@ public class PanelGestionValoracionMateria2 extends JPanel {
 		
 		JLabel lblNewLabel_1 = new JLabel("Profesor:");
 		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-		gbc_lblNewLabel_1.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel_1.insets = new Insets(0, 5, 5, 5);
 		gbc_lblNewLabel_1.gridx = 0;
 		gbc_lblNewLabel_1.gridy = 1;
 		panelJCBs.add(lblNewLabel_1, gbc_lblNewLabel_1);
 		
 		GridBagConstraints gbc_jcbProfesor = new GridBagConstraints();
-		gbc_jcbProfesor.insets = new Insets(5, 5, 5, 0);
+		gbc_jcbProfesor.insets = new Insets(5, 5, 5, 5);
 		gbc_jcbProfesor.fill = GridBagConstraints.HORIZONTAL;
 		gbc_jcbProfesor.gridx = 1;
 		gbc_jcbProfesor.gridy = 1;
 		panelJCBs.add(jcbProfesor, gbc_jcbProfesor);
 		
-		JLabel lblNewLabel_2 = new JLabel("Nota");
+		JLabel lblNewLabel_2 = new JLabel("Nota:");
 		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
 		gbc_lblNewLabel_2.insets = new Insets(0, 5, 5, 5);
 		gbc_lblNewLabel_2.gridx = 0;
@@ -113,24 +126,33 @@ public class PanelGestionValoracionMateria2 extends JPanel {
 		
 		GridBagConstraints gbc_jSliderNota = new GridBagConstraints();
 		gbc_jSliderNota.insets = new Insets(5, 5, 5, 10);
-		gbc_jSliderNota.fill = GridBagConstraints.BOTH;
+		gbc_jSliderNota.fill = GridBagConstraints.HORIZONTAL;
 		gbc_jSliderNota.gridx = 1;
 		gbc_jSliderNota.gridy = 2;
 		panelJCBs.add(jSliderNota, gbc_jSliderNota);
 		
-		GridBagConstraints gbc_jbtActualizarAlumnos = new GridBagConstraints();
-		gbc_jbtActualizarAlumnos.anchor = GridBagConstraints.EAST;
-		gbc_jbtActualizarAlumnos.gridx = 1;
-		gbc_jbtActualizarAlumnos.gridy = 3;
-		panelJCBs.add(jbtActualizarAlumnos, gbc_jbtActualizarAlumnos);
+		JLabel lblFecha = new JLabel("Fecha:");
+		GridBagConstraints gbc_lblFecha = new GridBagConstraints();
+		gbc_lblFecha.insets = new Insets(0, 0, 5, 5);
+		gbc_lblFecha.gridx = 0;
+		gbc_lblFecha.gridy = 3;
+		panelJCBs.add(lblFecha, gbc_lblFecha);
 		
-		jbtActualizarAlumnos.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
+		GridBagConstraints gbc_jFormatedFecha = new GridBagConstraints();
+		gbc_jFormatedFecha.anchor = GridBagConstraints.WEST;
+		gbc_jFormatedFecha.insets = new Insets(5, 5, 5, 0);
+		gbc_jFormatedFecha.gridx = 1;
+		gbc_jFormatedFecha.gridy = 3;
+
+		configurarFecha();
+		panelJCBs.add(jFormattedFecha, gbc_jFormatedFecha);
+		
+		GridBagConstraints gbc_jbtActualizarAlumnos = new GridBagConstraints();
+		gbc_jbtActualizarAlumnos.gridwidth = 2;
+		gbc_jbtActualizarAlumnos.insets = new Insets(5, 5, 5, 5);
+		gbc_jbtActualizarAlumnos.gridx = 1;
+		gbc_jbtActualizarAlumnos.gridy = 4;
+		panelJCBs.add(jbtActualizarAlumnos, gbc_jbtActualizarAlumnos);
 		
 		
 		JPanel panelCentral = new JPanel();
@@ -156,16 +178,16 @@ public class PanelGestionValoracionMateria2 extends JPanel {
 		gbc_lblAlumnosSeleccionados.gridy = 1;
 		panelCentral.add(lblAlumnosSeleccionados, gbc_lblAlumnosSeleccionados);
 		
-		GridBagConstraints gbc_jListNoSeleccionados = new GridBagConstraints();
-		gbc_jListNoSeleccionados.fill = GridBagConstraints.BOTH;
-		gbc_jListNoSeleccionados.insets = new Insets(5, 5, 5, 0);
-		gbc_jListNoSeleccionados.gridx = 0;
-		gbc_jListNoSeleccionados.gridy = 2;
-		panelCentral.add(jListNoSeleccionados, gbc_jListNoSeleccionados);
+		GridBagConstraints gbc_jScrollNoSelec = new GridBagConstraints();
+		gbc_jScrollNoSelec.insets = new Insets(5, 5, 5, 5);
+		gbc_jScrollNoSelec.fill = GridBagConstraints.BOTH;
+		gbc_jScrollNoSelec.gridx = 0;
+		gbc_jScrollNoSelec.gridy = 2;
+		panelCentral.add(jScrollNoSelec, gbc_jScrollNoSelec);
 		
 		JPanel panelBotonesSeleccion = new JPanel();
 		GridBagConstraints gbc_panelBotonesSeleccion = new GridBagConstraints();
-		gbc_panelBotonesSeleccion.insets = new Insets(5, 5, 5, 5);
+		gbc_panelBotonesSeleccion.insets = new Insets(5, 5, 0, 5);
 		gbc_panelBotonesSeleccion.fill = GridBagConstraints.VERTICAL;
 		gbc_panelBotonesSeleccion.gridx = 1;
 		gbc_panelBotonesSeleccion.gridy = 2;
@@ -201,12 +223,12 @@ public class PanelGestionValoracionMateria2 extends JPanel {
 		gbc_jbtSeleccionarTodos.gridy = 3;
 		panelBotonesSeleccion.add(jbtSeleccionarTodos, gbc_jbtSeleccionarTodos);
 		
-		GridBagConstraints gbc_jListSeleccionados = new GridBagConstraints();
-		gbc_jListSeleccionados.insets = new Insets(5, 0, 5, 5);
-		gbc_jListSeleccionados.fill = GridBagConstraints.BOTH;
-		gbc_jListSeleccionados.gridx = 2;
-		gbc_jListSeleccionados.gridy = 2;
-		panelCentral.add(jListSeleccionados, gbc_jListSeleccionados);
+		GridBagConstraints gbc_jScrollSeleccionados = new GridBagConstraints();
+		gbc_jScrollSeleccionados.insets = new Insets(5, 5, 5, 5);
+		gbc_jScrollSeleccionados.fill = GridBagConstraints.BOTH;
+		gbc_jScrollSeleccionados.gridx = 2;
+		gbc_jScrollSeleccionados.gridy = 2;
+		panelCentral.add(jScrollSeleccionados, gbc_jScrollSeleccionados);
 		
 		JPanel panelBtnGuardar = new JPanel();
 		add(panelBtnGuardar, BorderLayout.SOUTH);
@@ -256,7 +278,10 @@ public class PanelGestionValoracionMateria2 extends JPanel {
 
 		}
 		
+		jScrollNoSelec.setViewportView(jListNoSeleccionados);
+		
 		jListNoSeleccionados.setModel(defaultModelJListNoSelec);
+		jScrollSeleccionados.setViewportView(jListSeleccionados);
 		jListSeleccionados.setModel(defaultModelJListSelec);
 	}
 	
@@ -271,6 +296,13 @@ public class PanelGestionValoracionMateria2 extends JPanel {
 					(Profesor) jcbProfesor.getSelectedItem(), (Materia) jcbMateria.getSelectedItem());
 			
 			nuevoRegistro.setValoracion((float) jSliderNota.getValue());
+			
+			if (jFormattedFecha.getValue() != null) {
+				
+				Date fechaIntroducida = (Date) jFormattedFecha.getValue();
+				
+				nuevoRegistro.setFecha(new java.sql.Date(fechaIntroducida.getTime()));
+			}
 			
 			//Buscar si existe un registro con el controlador y guardar el resultado
 			Valoracionmateria registroBuscado = ValoracionMateriaControlador.getInstancia().findByProfesorEstudianteMateria(nuevoRegistro);
@@ -290,6 +322,43 @@ public class PanelGestionValoracionMateria2 extends JPanel {
 		JOptionPane.showMessageDialog(null, "Guardado correctamente");
 	}
 	
+	/**
+	 * Metodo para configurar el JFormattedTextField para la fecha
+	 */
+	@SuppressWarnings("serial")
+	private void configurarFecha() {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		
+		
+		jFormattedFecha = new JFormattedTextField(new JFormattedTextField.AbstractFormatter() {
+			
+			
+			@Override
+			public Object stringToValue(String text) throws ParseException {
+				try {
+					return sdf.parse(text);
+				} catch (Exception e) {
+					return null;
+				}
+				
+			}
+
+			@Override
+			public String valueToString(Object value) throws ParseException {
+				if (value != null && value instanceof Date) {
+					
+					return sdf.format((Date) value); 
+				}
+				return "";
+			}
+
+		}); 
+		
+		
+		jFormattedFecha.setPreferredSize(new Dimension(100,20));
+		jFormattedFecha.setValue(new Date());
+	}
 	
 	/**
 	 * Metodo para configurar los botones
@@ -315,16 +384,7 @@ public class PanelGestionValoracionMateria2 extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Estudiante est;
-				
-				for (int i = 0; i < defaultModelJListSelec.getSize(); i++) {
-					
-					est = defaultModelJListSelec.get(i);
-					defaultModelJListNoSelec.addElement(est);
-					
-				}
-				
-				defaultModelJListSelec.removeAllElements();				
+				quitarTodos();				
 			}
 		});
 		
@@ -334,38 +394,18 @@ public class PanelGestionValoracionMateria2 extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				int elegido;
-				
-				if (jListSeleccionados.isSelectionEmpty()) {
-					JOptionPane.showMessageDialog(null, "Por favor, seleccione un alumno");
-				}
-				else {
-					elegido = jListSeleccionados.getSelectedIndex();
-					Estudiante est = jListSeleccionados.getSelectedValue();
-					defaultModelJListNoSelec.addElement(est);
-					defaultModelJListSelec.removeElementAt(elegido);		
-				}
+				quitarUnoOMas();
 				
 			}
 		});
 		
-		//Boton seleccionar uno
+		//Boton seleccionar uno o mas
 		jbtSeleccionarUno.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				int elegido;
-				
-				if (jListNoSeleccionados.isSelectionEmpty()) {
-					JOptionPane.showMessageDialog(null, "Por favor, seleccione un alumno");
-				}
-				else {
-					elegido = jListNoSeleccionados.getSelectedIndex();
-					Estudiante est = jListNoSeleccionados.getSelectedValue();
-					defaultModelJListSelec.addElement(est);
-					defaultModelJListNoSelec.removeElementAt(elegido);		
-				}
+				seleccionarUnoOMas();
 				
 			}
 		});
@@ -376,15 +416,7 @@ public class PanelGestionValoracionMateria2 extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Estudiante est;
-				for (int i = 0; i < defaultModelJListNoSelec.getSize(); i++) {
-					
-					est = defaultModelJListNoSelec.get(i);
-					defaultModelJListSelec.addElement(est);
-					
-				}
-				
-				defaultModelJListNoSelec.removeAllElements();
+				seleccionarTodos();
 			}
 		});
 		
@@ -393,20 +425,112 @@ public class PanelGestionValoracionMateria2 extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Estudiante est;
-				
-				for (int i = 0; i < defaultModelJListSelec.getSize(); i++) {
-					
-					est = defaultModelJListSelec.get(i);
-					defaultModelJListNoSelec.addElement(est);
-					
-				}
-				
-				defaultModelJListSelec.removeAllElements();	
+				actualizarAlumnado();
 				
 			}
 		});
 		
 	}
 	
+	/**
+	 * 
+	 */
+	private void quitarTodos() {
+		
+		Estudiante est;
+		
+		for (int i = 0; i < defaultModelJListSelec.getSize(); i++) {
+			
+			est = defaultModelJListSelec.get(i);
+			defaultModelJListNoSelec.addElement(est);
+			
+		}
+		
+		defaultModelJListSelec.removeAllElements();
+		
+	}
+	
+	/**
+	 * 
+	 */
+	private void quitarUnoOMas() {
+		
+		int elegidos[];
+		
+		if (jListSeleccionados.isSelectionEmpty()) {
+			JOptionPane.showMessageDialog(null, "Por favor, seleccione un alumno");
+		}
+		else {
+			elegidos = jListSeleccionados.getSelectedIndices();
+			
+			
+			for (int i = elegidos.length-1; i >= 0; i--) {
+				Estudiante est = defaultModelJListSelec.getElementAt(elegidos[i]);
+				defaultModelJListNoSelec.addElement(est);
+				defaultModelJListSelec.removeElementAt(elegidos[i]);	
+				
+			}
+			
+		}
+		
+	}
+	
+	/**
+	 * 
+	 */
+	private void seleccionarTodos() {
+		
+		Estudiante est;
+		for (int i = 0; i < defaultModelJListNoSelec.getSize(); i++) {
+			
+			est = defaultModelJListNoSelec.get(i);
+			defaultModelJListSelec.addElement(est);
+			
+		}
+		
+		defaultModelJListNoSelec.removeAllElements();
+		
+	}
+	
+	/**
+	 * 
+	 */
+	private void seleccionarUnoOMas() {
+		
+		int elegidos[];
+		
+		if (jListNoSeleccionados.isSelectionEmpty()) {
+			JOptionPane.showMessageDialog(null, "Por favor, seleccione un alumno");
+		}
+		else {
+			elegidos = jListNoSeleccionados.getSelectedIndices();
+			
+			
+			for (int i = elegidos.length-1; i >= 0; i--) {
+				Estudiante est = defaultModelJListNoSelec.getElementAt(elegidos[i]);
+				defaultModelJListSelec.addElement(est);
+				defaultModelJListNoSelec.removeElementAt(elegidos[i]);	
+				
+			}
+			
+		}
+		
+	}
+	
+	/**
+	 * 
+	 */
+	private void actualizarAlumnado() {
+		Estudiante est;
+		
+		for (int i = 0; i < defaultModelJListSelec.getSize(); i++) {
+			
+			est = defaultModelJListSelec.get(i);
+			defaultModelJListNoSelec.addElement(est);
+			
+		}
+		
+		defaultModelJListSelec.removeAllElements();	
+		
+	}
 }

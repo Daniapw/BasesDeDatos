@@ -91,7 +91,7 @@ public class Materia extends Entidad implements Serializable {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return id +  " " + nombre;
+		return id + " " + nombre;
 	}
 
 }

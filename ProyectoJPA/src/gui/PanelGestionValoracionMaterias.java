@@ -166,13 +166,11 @@ public class PanelGestionValoracionMaterias extends JPanel {
 	 */
 	private void guardar() {
 
-		Valoracionmateria nuevoRegistro = new Valoracionmateria();
+		Valoracionmateria nuevoRegistro;
 		
 		for (PanelNotaEstudiante panel : panelesNotas) {
 			
-			nuevoRegistro.setEstudiante(panel.getEstudiante());
-			nuevoRegistro.setMateria(panel.getMateria());
-			nuevoRegistro.setProfesor(panel.getProfesor());
+			nuevoRegistro = new Valoracionmateria(panel.getEstudiante(), panel.getProfesor(), panel.getMateria() );
 			nuevoRegistro.setValoracion( panel.getNotaEstudiante());
 			
 			//Buscar si existe un registro con el controlador y guardar el resultado
