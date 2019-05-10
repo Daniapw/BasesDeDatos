@@ -1,10 +1,13 @@
 package gui;
 
 import javax.swing.JPanel;
-import javax.swing.JEditorPane;
 import java.awt.BorderLayout;
+import javax.swing.JSplitPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 public class PanelTablaNotas extends JPanel {
+	private JTable jTableEstudiantes;
 
 	/**
 	 * Create the panel.
@@ -12,14 +15,18 @@ public class PanelTablaNotas extends JPanel {
 	public PanelTablaNotas() {
 		setLayout(new BorderLayout(0, 0));
 		
-		JEditorPane jEditorPane = new JEditorPane();
-		add(jEditorPane, BorderLayout.CENTER);
+		JSplitPane splitPane = new JSplitPane();
+		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		add(splitPane, BorderLayout.CENTER);
 		
-		jEditorPane.setContentType("text/html");
-		jEditorPane.setText("<b>hola</b><br>" + "<i>adios</i><br>" + "<font face=\"arial\">fuente arial</font><br>"
-				+ "<font face=\"courier\">fuente courier</font><br>" + "<font size=\"24\">fuente grande</font><br>"
-				+ "<font color=\"red\">color rojo</font><br>"
-				+ "<img src=\"http://webdidacticarafaelmunoz.appspot.com/java/CursodeSpaceInvaders/res/nave.gif\"></img>");
+		JScrollPane jScrollPane = new JScrollPane();
+		splitPane.setLeftComponent(jScrollPane);
+		
+		jTableEstudiantes = new JTable();
+		jScrollPane.setViewportView(jTableEstudiantes);
+		
+		PanelGestionEstudiantes panelEstudiantes = new PanelGestionEstudiantes();
+		splitPane.setRightComponent(panelEstudiantes);
 	}
 
 }

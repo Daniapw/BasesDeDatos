@@ -119,7 +119,7 @@ public class Menu extends JMenuBar {
 			}
 		});
         
-        JMenuItem miPanelTablaNotas = new JMenuItem("Tabla HTML Notas");
+        JMenuItem miPanelTablaNotas = new JMenuItem("Tabla Estudiantes");
         miPanelTablaNotas.addActionListener(new ActionListener() {
 			
 			@Override
@@ -128,7 +128,7 @@ public class Menu extends JMenuBar {
 				JDialog dialogo = new JDialog();
 				dialogo.setResizable(false);
 				dialogo.setTitle("Notas del curso");
-				dialogo.setBounds(100, 100, 610, 450);
+				dialogo.setBounds(100, 100, 610, 600);
 				dialogo.setContentPane(new PanelTablaNotas());
 				dialogo.setModal(true);
 				dialogo.setVisible(true);
