@@ -18,6 +18,7 @@ public class PanelGestionEstudiantes extends JPanel {
 
 	public Estudiante actual = null;
 	public PanelGenerico panel = new PanelGenerico();
+	public JToolBar toolBar = null;
 	
 	/**
 	 * 
@@ -26,7 +27,7 @@ public class PanelGestionEstudiantes extends JPanel {
 		super();
 		this.setLayout(new BorderLayout());
 		
-		this.add(toolbar(), BorderLayout.NORTH);
+		this.add(getToolbar(),BorderLayout.NORTH);
 		this.add(panel, BorderLayout.CENTER);
 		
 		actual = EstudianteControlador.getInstancia().findFirst();
@@ -37,9 +38,9 @@ public class PanelGestionEstudiantes extends JPanel {
 	 * 
 	 * @return
 	 */
-	public JToolBar toolbar() {
+	public JToolBar getToolbar() {
 		
-		JToolBar toolBar = new JToolBar();
+		toolBar = new JToolBar();
 		
 		JButton jbtPrimero = new JButton();
 		asignarFuncion(jbtPrimero, "gotostart.png", PanelGenerico.LOAD_FIRST);
@@ -102,13 +103,14 @@ public class PanelGestionEstudiantes extends JPanel {
 					actual = obtenido;
 					cargarDatosActual();
 				}
+				
 			}});
 	}
 	
 	/**
 	 * 
 	 */
-	private void nuevo() {
+	public void nuevo() {
 		
 		this.panel.getJtfID().setText("");
 		this.panel.getJtfNombre().setText("");
@@ -126,7 +128,7 @@ public class PanelGestionEstudiantes extends JPanel {
 	/**
 	 * 
 	 */
-	private void guardar () {
+	public void guardar () {
 		Estudiante nuevoRegistro = new Estudiante();
 		
 		if (this.panel.jtfID.getText().trim().equals("")) {
@@ -166,7 +168,7 @@ public class PanelGestionEstudiantes extends JPanel {
 	 * 
 	 * @return
 	 */
-	private Estudiante eliminar () {
+	public Estudiante eliminar () {
 		String respuestas[] = new String[] {"S�", "No"};
 		int opcionElegida = JOptionPane.showOptionDialog(null, 
 				"�Realmente desea eliminar el registro?", "Eliminaci�n del registro", 
@@ -194,9 +196,18 @@ public class PanelGestionEstudiantes extends JPanel {
 	}
 	
 	/**
+	 * Cargar estudiante especifico mediante ID
+	 * @param id
+	 */
+	public void cargarDatosEstudianteEspecifico(int id) {
+		actual = EstudianteControlador.getInstancia().findById(id);
+		cargarDatosActual();
+	}
+	
+	/**
 	 * 
 	 */
-	private void cargarDatosActual () {
+	public void cargarDatosActual () {
 
 		if (this.actual != null) {
 			
