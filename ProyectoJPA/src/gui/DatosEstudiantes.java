@@ -8,7 +8,7 @@ import modelo.controladores.EstudianteControlador;
 public class DatosEstudiantes {
 
 	public static String[] getTitulosColumnas() {
-		return new String[] {"Id", "Nombre", "1� Apellido", "2� Apellido", "DNI.", "Direccion", "Email", "Imagen", "Color preferido", "Sexo"};
+		return new String[] {"Id", "Nombre", "1er Apellido", "2o Apellido", "DNI", "Direccion", "Email", "Imagen", "Color preferido", "Sexo"};
 	}
 	
 	
