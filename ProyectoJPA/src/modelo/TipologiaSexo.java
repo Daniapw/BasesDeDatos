@@ -95,7 +95,7 @@ public class TipologiaSexo extends Entidad implements Serializable {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return id + " " + descripcion;
+		return descripcion;
 	}
 
 }

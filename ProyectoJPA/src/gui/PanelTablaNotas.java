@@ -1,22 +1,19 @@
 package gui;
 
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
-import javax.swing.table.DefaultTableModel;
-
+import javax.swing.table.AbstractTableModel;
 import gui.utils.CacheImagenes;
 import modelo.Estudiante;
 import modelo.controladores.EstudianteControlador;
@@ -24,10 +21,9 @@ import modelo.controladores.EstudianteControlador;
 public class PanelTablaNotas extends JPanel {
 	private JTable jTableEstudiantes;
 	private PanelGestionEstudiantes panelEstudiantes = new PanelGestionEstudiantes();
-	private DefaultTableModel dtm = null;
-	private Object datosEnTabla[][] = DatosEstudiantes.getDatosDeTabla();
-	private String titulosEnTabla[] = DatosEstudiantes.getTitulosColumnas();
+	private ModeloPersonalizado modelo = null;
 	private JToolBar toolBar;
+	private Object datosTabla[][] = null;
 
 	/**
 	 * Create the panel.
@@ -37,6 +33,7 @@ public class PanelTablaNotas extends JPanel {
 		
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		splitPane.setDividerLocation(150);
 		add(splitPane, BorderLayout.CENTER);
 		toolBar = getToolbar();
 		this.add(toolBar,BorderLayout.NORTH);
@@ -45,13 +42,23 @@ public class PanelTablaNotas extends JPanel {
 		JScrollPane jScrollPane = new JScrollPane();
 		splitPane.setLeftComponent(jScrollPane);
 		
-		dtm = getDefaultTableModelNoEditable();
-		jTableEstudiantes = new JTable(dtm);
+		//Creacion modelo
+		modelo = new ModeloPersonalizado();
+		
+		//Puntero datos
+		datosTabla = modelo.datos;
+		jTableEstudiantes = new JTable(modelo);
+		//Personalizar encabezado de la tabla
+		jTableEstudiantes.getTableHeader().setFont(new Font(this.getFont().getFontName(), Font.BOLD, 12));
+		jTableEstudiantes.getTableHeader().setBackground(Color.decode("#3281ff"));
+		jTableEstudiantes.getTableHeader().setForeground(Color.WHITE);
+
 		jScrollPane.setViewportView(jTableEstudiantes);
 		
 		panelEstudiantes.remove(panelEstudiantes.toolBar);
 		splitPane.setRightComponent(panelEstudiantes);
 
+		
 		jTableEstudiantes.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -89,27 +96,89 @@ public class PanelTablaNotas extends JPanel {
 		jTableEstudiantes.setRowSelectionInterval(0, 0);
 		
 	}
-
 	
 	/**
-	 * Metodo para coger el DefaultTableModel
-	 * @return
+	 * Modelo de tabla abstracto, que nos permite un control mayor sobre la apariencia, eventos y renderizadores de la tabla
+	 * @author R
+	 *
 	 */
-	private DefaultTableModel getDefaultTableModelNoEditable () {
-		@SuppressWarnings("serial")
-		DefaultTableModel dtm = new DefaultTableModel(datosEnTabla, titulosEnTabla) {
-			
-			/**
-			 * La sobreescritura de este método nos permite controlar qué celdas queremos que sean editables
-			 */
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
+	private class ModeloPersonalizado extends AbstractTableModel {
+
+		Object datos[][] = null;
+		String titulos[] = null;
+
+		/**
+		 * 
+		 */
+		public ModeloPersonalizado() {
+			// Datos a presentar en la tabla
+			datos = DatosEstudiantes.getDatosDeTabla();
+			titulos = DatosEstudiantes.getTitulosColumnas();
+		}
 		
-		return dtm;
+		// Los tres siguientes mï¿½todos son los mï¿½nimos necesarios para representar la tabla
+		/**
+		 * Permite que la tabla sepa cuï¿½ntas columnas debe mostrar
+		 */
+		@Override
+		public int getColumnCount() {
+			return titulos.length;
+		}
+
+		/**
+		 * Permite que la tabla sepa cuï¿½ntas filas debe mostrar
+		 */
+		@Override
+		public int getRowCount() {
+			return datos.length;
+		}
+
+		/**
+		 * Se conocerï¿½ el dato en cada celda, es uno de los mï¿½todos fundamentales del abstractTableModel
+		 */
+		@Override
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			return datos[rowIndex][columnIndex];
+		}
+
+		/**
+		 * Podemos indicar si la tabla serï¿½ o no editable en cada una de sus celdas, incluso por separado
+		 */
+		@Override
+		public boolean isCellEditable(int rowIndex, int columnIndex) {
+			return false;
+		}
+
+		/**
+		 * Este mï¿½todo da nombre a las columnas de la tabla
+		 */
+		@Override
+		public String getColumnName(int column) {
+			return this.titulos[column];
+		}
+
+		/**
+		 * Permite que la tabla sepa que tipo de dato estï¿½ mostrando en cada columna
+		 */
+		@Override
+		public Class<?> getColumnClass(int columnIndex) {
+			if (this.datos.length > 0) {
+				return this.datos[0][columnIndex].getClass();
+			}
+			return String.class;
+		}
+
+		/**
+		 * Este mï¿½todo sï¿½lo debe implementarse si la tabla es editable y los datos pueden cambiar
+		 */
+		@Override
+		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+			this.datos[rowIndex][columnIndex] = aValue;
+			fireTableCellUpdated(rowIndex, columnIndex);
+		}
+		
 	}
+	
 	
 	/**
 	 * 
@@ -171,10 +240,17 @@ public class PanelTablaNotas extends JPanel {
 					obtenido = EstudianteControlador.getInstancia().findLast();
 				if (funcion == PanelGenerico.NEW) 
 					panelEstudiantes.nuevo();
-				if (funcion == PanelGenerico.SAVE) 
+				if (funcion == PanelGenerico.SAVE) {
 					panelEstudiantes.guardar();
-				if (funcion == PanelGenerico.REMOVE) 
+					actualizarTabla();
+				}
+					
+				if (funcion == PanelGenerico.REMOVE) {
 					obtenido = panelEstudiantes.eliminar();
+					//Puesto que al borrar un registro el numero de registros totales
+					//va a cambiar llamo a rehacerTabla() directamente
+					rehacerTabla();
+				}
 				
 				if (obtenido != null) {
 					panelEstudiantes.actual = obtenido;
@@ -185,10 +261,11 @@ public class PanelTablaNotas extends JPanel {
 				//Seleccionar fila correspondiente
 				Integer id = panelEstudiantes.actual.getId();
 				
-				for (int i = 0; i < dtm.getRowCount(); i++) {
+				for (int i = 0; i < modelo.getRowCount(); i++) {
 					
-					if (dtm.getValueAt(i, 0) == id) {
+					if (modelo.getValueAt(i, 0).equals(id)) {
 						jTableEstudiantes.setRowSelectionInterval(i, i);
+						break;
 					}
 					
 				}
@@ -196,4 +273,51 @@ public class PanelTablaNotas extends JPanel {
 			}});
 	}
 	
+	/**
+	 * 
+	 */
+	private void actualizarTabla() {
+		
+		Estudiante actual = panelEstudiantes.actual;
+		
+		Object nuevosDatos[][] = DatosEstudiantes.getDatosDeTabla();
+		
+		//Si la longitud de los datos actualizados es mayor a la de los datos actuales significa que hay un nuevo
+		//registro, por lo tanto hay que rehacer la tabla
+		if (nuevosDatos.length > datosTabla.length) {
+			rehacerTabla();
+		}
+		//Si la longitud es igual significa que un registro ha sido modificado
+		else {
+			
+			for (int i=0; i < jTableEstudiantes.getRowCount(); i++) {
+				Integer idFila = (Integer) modelo.getValueAt(i, 0);
+				
+				if (idFila == panelEstudiantes.actual.getId()) {
+					
+					modelo.setValueAt(actual.getNombre(), i, 1);
+					modelo.setValueAt(actual.getPrimerApellido(), i, 2);
+					modelo.setValueAt(actual.getSegundoApellido(), i, 3);
+					modelo.setValueAt(actual.getDni(), i, 4);
+					modelo.setValueAt(actual.getDireccion(), i, 5);
+					modelo.setValueAt(actual.getEmail(), i, 6);
+					modelo.setValueAt(actual.getImagen(), i, 7);
+					modelo.setValueAt(actual.getColorPreferido(), i, 8);
+					modelo.setValueAt(actual.getTipologiaSexo(), i, 9);
+						
+					break;
+				}	
+			}
+				
+		}
+		
+	}
+	
+	/**
+	 * Metodo para rehacer la tabla con datos actualizados
+	 */
+	private void rehacerTabla() {		
+		modelo = new ModeloPersonalizado();
+		jTableEstudiantes.setModel(modelo);
+	}
 }

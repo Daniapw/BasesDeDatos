@@ -8,7 +8,7 @@ import modelo.controladores.EstudianteControlador;
 public class DatosEstudiantes {
 
 	public static String[] getTitulosColumnas() {
-		return new String[] {"Id", "Nombre", "1º Apellido", "2º Apellido", "DNI.", "Direccion", "Email", "Imagen", "Color preferido"};
+		return new String[] {"Id", "Nombre", "1ï¿½ Apellido", "2ï¿½ Apellido", "DNI.", "Direccion", "Email", "Imagen", "Color preferido", "Sexo"};
 	}
 	
 	
@@ -20,7 +20,7 @@ public class DatosEstudiantes {
 		// Obtengo todas las personas
 		List<Estudiante> personas = EstudianteControlador.getInstancia().findAllEstudiante();
 		// Preparo una estructura para pasar al constructor de la JTable
-		Object[][] datos = new Object[personas.size()][9];
+		Object[][] datos = new Object[personas.size()][10];
 		// Cargo los datos de la lista de personas en la matriz de los datos
 		for (int i = 0; i < personas.size(); i++) {
 			Estudiante persona = personas.get(i);
@@ -33,6 +33,7 @@ public class DatosEstudiantes {
 			datos[i][6] = persona.getEmail();
 			datos[i][7] = persona.getImagen();
 			datos[i][8] = persona.getColorPreferido();
+			datos[i][9] = persona.getTipologiaSexo();
 		}
 		
 		return datos;

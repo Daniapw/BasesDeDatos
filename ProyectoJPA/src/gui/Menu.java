@@ -111,7 +111,7 @@ public class Menu extends JMenuBar {
 				JDialog dialogo = new JDialog();
 				dialogo.setResizable(false);
 				dialogo.setTitle("Gestion de notas alternativo");
-				dialogo.setBounds(100, 100, 610, 450);
+				dialogo.setBounds(100, 100, 650, 450);
 				dialogo.setContentPane(new PanelGestionValoracionMateria2());
 				dialogo.setModal(true);
 				dialogo.setVisible(true);
