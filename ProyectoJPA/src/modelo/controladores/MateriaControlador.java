@@ -3,10 +3,15 @@ package modelo.controladores;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+
 import modelo.Curso;
 import modelo.Entidad;
 import modelo.Materia;
 import modelo.TipologiaSexo;
+import modelo.Valoracionmateria;
 
 public class MateriaControlador extends Controlador{
 	
@@ -56,6 +61,30 @@ public class MateriaControlador extends Controlador{
 		return (Materia) super.findPrevious(e);
 	}
 
+	public List<String> findAllNombres(){
+		
+		List<Materia> resultados = new ArrayList<Materia>();
+		List<String> nombres = new ArrayList<String>();
+		
+		try {
+			EntityManager em = Controlador.getEntityManagerFactory().createEntityManager();
+			Query q = em.createNativeQuery("SELECT * FROM materia", Materia.class);
+			
+			resultados=(List<Materia>) q.getResultList();
+			
+			for (Materia materia:resultados) {
+				nombres.add(materia.getNombre());
+			}
+			
+			em.close();
+			return nombres;
+			
+		} catch (NoResultException nrEx) {
+			return null;
+		}
+		
+	}
+	
 	public List<Materia> findAllMateria() {
 		
 		List<Materia> materias = new ArrayList<Materia>();

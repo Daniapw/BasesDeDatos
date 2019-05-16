@@ -84,7 +84,7 @@ public class ValoracionMateriaControlador extends Controlador {
 		
 	}
 	
-	public float findNotaMedia(Estudiante estudiante, Materia materia) {
+	public float findNotaMediaMateria(Estudiante estudiante, String materia) {
 		
 		
 		List<Valoracionmateria> resultados = new ArrayList<Valoracionmateria>();
@@ -92,9 +92,9 @@ public class ValoracionMateriaControlador extends Controlador {
 		
 		try {
 			EntityManager em = Controlador.getEntityManagerFactory().createEntityManager();
-			Query q = em.createNativeQuery("SELECT * FROM valoracionmateria v where v.idEstudiante=? and v.idMateria=?", Valoracionmateria.class);
+			Query q = em.createNativeQuery("SELECT * FROM valoracionmateria v, materia m where v.idEstudiante=? and v.idMateria=(SELECT id from materia where nombre=?);", Valoracionmateria.class);
 			q.setParameter(1, estudiante.getId());
-			q.setParameter(2, materia.getId());
+			q.setParameter(2, materia);
 			
 			resultados=(List<Valoracionmateria>) q.getResultList();
 			

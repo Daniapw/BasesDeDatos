@@ -145,7 +145,7 @@ public class Menu extends JMenuBar {
 				JDialog dialogo = new JDialog();
 				dialogo.setResizable(false);
 				dialogo.setTitle("Notas del curso");
-				dialogo.setBounds(100, 100, 900, 600);
+				dialogo.setBounds(100, 100, 1000, 600);
 				dialogo.setContentPane(new PanelTablaHTML());
 				dialogo.setModal(true);
 				dialogo.setVisible(true);
