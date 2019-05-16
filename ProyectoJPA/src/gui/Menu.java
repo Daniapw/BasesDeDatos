@@ -136,6 +136,23 @@ public class Menu extends JMenuBar {
 			}
 		});
         
+        JMenuItem miPanelHTML = new JMenuItem("Tabla HTML");
+        miPanelHTML.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				JDialog dialogo = new JDialog();
+				dialogo.setResizable(false);
+				dialogo.setTitle("Notas del curso");
+				dialogo.setBounds(100, 100, 900, 600);
+				dialogo.setContentPane(new PanelTablaHTML());
+				dialogo.setModal(true);
+				dialogo.setVisible(true);
+				
+			}
+		});
+        
         menuArchivo.add(miCursoAcademico);
         menuArchivo.add(miMaterias);
         menuArchivo.add(miEstudiantes);
@@ -143,6 +160,8 @@ public class Menu extends JMenuBar {
         menuArchivo.add(miValoracionMaterias);
         menuArchivo.add(miValoracionMaterias2);
         menuArchivo.add(miPanelTablaNotas);
+        menuArchivo.add(miPanelHTML);
+
         
         this.add(menuArchivo);
 	}

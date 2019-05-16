@@ -8,6 +8,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import modelo.Entidad;
+import modelo.Estudiante;
 import modelo.Materia;
 import modelo.Valoracionmateria;
 
@@ -81,6 +82,33 @@ public class ValoracionMateriaControlador extends Controlador {
 		}
 		
 		
+	}
+	
+	public float findNotaMedia(Estudiante estudiante, Materia materia) {
+		
+		
+		List<Valoracionmateria> resultados = new ArrayList<Valoracionmateria>();
+		float notaMedia = 0;
+		
+		try {
+			EntityManager em = Controlador.getEntityManagerFactory().createEntityManager();
+			Query q = em.createNativeQuery("SELECT * FROM valoracionmateria v where v.idEstudiante=? and v.idMateria=?", Valoracionmateria.class);
+			q.setParameter(1, estudiante.getId());
+			q.setParameter(2, materia.getId());
+			
+			resultados=(List<Valoracionmateria>) q.getResultList();
+			
+			for (Valoracionmateria valoracion:resultados) {
+				notaMedia = notaMedia + valoracion.getValoracion();
+			}
+			notaMedia = notaMedia/resultados.size();
+			
+			em.close();
+			return notaMedia;
+			
+		} catch (NoResultException nrEx) {
+			return 0;
+		}
 	}
 	
 	public List<Valoracionmateria> findAllMateria() {
