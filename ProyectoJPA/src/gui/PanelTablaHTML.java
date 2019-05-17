@@ -93,7 +93,7 @@ public class PanelTablaHTML extends JPanel {
 	private String getNombres() {
 		StringBuffer nombres = new StringBuffer();
 		for (String nombre:nombresMaterias) {
-			if (nombre.equals("Lenguajes de Marcas y Sistemas de Gestión de la Información"))
+			if (nombre.equals("Lenguajes de Marcas y Sistemas de GestiÃ³n de la InformaciÃ³n"))
 				nombres.append("<td> <b>LMSGI</b> </td>");
 			else
 				nombres.append("<td> <b>"+ nombre +"</b> </td>");
